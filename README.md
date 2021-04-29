@@ -6,8 +6,6 @@ Een tekort aan ijzer kan de gewasopbrengst sterk beïnvloeden. Daarnaast speelt 
 
 De gebruikte cultivar is Triticum aestivum cv. Bobwhite S26 s. Zaden werden in gelijke omstandigheden gekiemd met voldoende ijzer aanwezig. Na 7 dagen werd de helft van de zaden overgebracht naar een ijzerarme omgeving. Vervolgens werden de planten gegroeid gedurende 90 dagen. Vervolgens werden van de wortels en bladeren van de planten in de twee condities RNA geïsoleerd. Per sample werden drie biologische replicaten genomen. Na een zuiveringsstap werden de sequencing libraries gemaakt. Na de library preparation werden de samples met behulp van de Illumina HiSeq gesequenced. In totaal werden 12 samples gesequenced. [(Wang et al., 2020)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7550799/)
 
----
-
  ## Stappen uit het artikel
  
 - QC: fastqc
