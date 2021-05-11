@@ -35,4 +35,21 @@ De dataset van het artikel is opgeslagen in de [GEO database](https://www.ncbi.n
 
 ## Op basis van fastq
 
-Een referentiegenoom van tarwe is beschikbaar via deze [**site**](https://www.wheatgenome.org/Tools-and-Resources/IWGSC-RefSeq-v2.1-Assembly-and-Annotation-now-freely-available-at-URGI-and-NCBI)
+### Data
+Een referentiegenoom van tarwe is beschikbaar via deze [**site**](https://www.wheatgenome.org/Tools-and-Resources/IWGSC-RefSeq-v2.1-Assembly-and-Annotation-now-freely-available-at-URGI-and-NCBI). Een annotatie bestand in ggf3 formaat is te vinden op deze [webstite](https://urgi.versailles.inrae.fr/download/iwgsc/IWGSC_RefSeq_Annotations/v2.1/), daarbij is gekozen voor het `	iwgsc_refseqv2.1_gene_annotation_200916.zip` bestand. Vervolgens zijn de volgende bestanden opgeslagen: `iwgsc_refseqv2.1_annotation_200916_LC.gff3`, `iwgsc_refseqv2.1_annotation_200916_HC.gff3`.
+
+### Stap 1: SRA bestanden downloaden
+De eerste stap in de analyse is het downloaden van de `.fastq` bestanden van SRA. 
+
+* SRR13114670
+* SRR13114671
+* SRR13114672
+* SRR13114673
+* SRR13114674
+* SRR13114675
+* SRR13114676
+* SRR13114677
+* SRR13114678
+* SRR13114679
+* SRR13114680
+* SRR13114681
