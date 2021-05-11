@@ -27,6 +27,8 @@ De reads in het artikel die zijn verkregen door RNA-seq zijn voor verdere verwer
 ## Data
 De dataset van het artikel is opgeslagen in de [GEO database](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE162027) op NCBI in de vorm van een Excel bestand. Dit Excel bestand is opgedeeld in twee onderdelen, de twee onderdelen bestaand uit samples van de wortelen en samples van de bladeren. Van elk onderdeel zijn zes samples, drie controle samples en drie samples met een laag ijzergehalte. De dataset is zo opgebouwd dat in de eerste kolom de reads zijn weergegeven. Deze zijn te herkennen aan de TreasCS naam. In de kolommen 2 tot en met 7 staat de ruwe data van de samples weergeven in de vorm van counts. Naast de ruwe data zijn in de kolommen 8 tot en met 23 nog extra data te vinden. Hierin zijn bijvoorbeeld log2 Foldchanges al weergegeven, Wald Test p-waarden en adjusted p-waarden te vinden, functie omschrijving van de genen en de locatie in de PFAM, GO en Interpro databases.
 
+Analyse
+
 \newpage
 
 # Analyse
