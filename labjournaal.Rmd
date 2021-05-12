@@ -54,9 +54,39 @@ De eerste stap in de analyse is het downloaden van de `.fastq` bestanden van SRA
 * SRR13114680
 * SRR13114681
 
-Met het onderstaande commando worden twee `.fastq` bestanden gedownload, een met de forward reads en een met de reverse reads.
+Met het onderstaande commando worden twee `.fastq` bestanden gedownload, een met de forward reads en een met de reverse reads. 
 
 ```{bash, eval=FALSE}
 fasterq-dump SRR13114670
 ```
 
+### Stap 2: QC
+Op de `.fastq` bestanden moet als eerst een kwaliteitscontrole uitgevoerd worden, hiervoor wordt gebruik gemaakt van FASTQC. 
+
+### Stap 3: trimmen & filteren
+Trimmen: Trimmomatic-0.36 cutting Illumina TruSeq adapters from the reads, cutting Illumina TruSeq adapters from the reads, and read length below 36 bp was dropped
+
+```{bash, eval=FALSE}
+trimmomatic PE reads_1.fastq reads_2.fastq \
+  outputFile1P.fastq outputFile1U.fastq outputFile2P.fastq outputFile2U.fastq \
+  MINLEN:36 \
+  ILLUMINACLIP:TruSeq3-PE.fa:2:30:1
+```
+
+
+### Stap 4: genoom indexeren met STAR
+https://physiology.med.cornell.edu/faculty/skrabanek/lab/angsd/lecture_notes/STARmanual.pdf
+```{bash, eval=FALSE}
+STAR --runThreadN ... \
+--runMode genomeGenerate \
+--genomeDir ... \
+--genomeFastaFiles ...\
+--sjdbGTFfile ... \
+--sjdbOverhang 100
+
+```
+
+### Stap 5: reads mappen tegen genoom met STAR
+
+### Stap 6: featureCounts
+https://hbctraining.github.io/Intro-to-rnaseq-hpc-O2/lessons/05_counting_reads.html
