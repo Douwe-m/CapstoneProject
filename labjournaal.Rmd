@@ -36,10 +36,10 @@ De dataset van het artikel is opgeslagen in de [GEO database](https://www.ncbi.n
 ## Op basis van fastq
 
 ### Data
-Een referentiegenoom van tarwe is beschikbaar via deze [**site**](https://www.wheatgenome.org/Tools-and-Resources/IWGSC-RefSeq-v2.1-Assembly-and-Annotation-now-freely-available-at-URGI-and-NCBI). Een annotatie bestand in ggf3 formaat is te vinden op deze [webstite](https://urgi.versailles.inrae.fr/download/iwgsc/IWGSC_RefSeq_Annotations/v2.1/), daarbij is gekozen voor het `	iwgsc_refseqv2.1_gene_annotation_200916.zip` bestand. Vervolgens zijn de volgende bestanden opgeslagen: `iwgsc_refseqv2.1_annotation_200916_LC.gff3`, `iwgsc_refseqv2.1_annotation_200916_HC.gff3`.
+Een referentiegenoom van tarwe is beschikbaar via deze [**site**](https://www.wheatgenome.org/Tools-and-Resources/IWGSC-RefSeq-v2.1-Assembly-and-Annotation-now-freely-available-at-URGI-and-NCBI). Een annotatie bestand in ggf3 formaat is te vinden op deze [webstite](https://urgi.versailles.inrae.fr/download/iwgsc/IWGSC_RefSeq_Annotations/v2.1/), daarbij is gekozen voor het `	iwgsc_refseqv2.1_gene_annotation_200916.zip` bestand. Vervolgens zijn de volgende bestanden opgeslagen: `iwgsc_refseqv2.1_annotation_200916_LC.gff3`, `iwgsc_refseqv2.1_annotation_200916_HC.gff3`. De accession code voor het BioProject op de NCBI website is **PRJNA680330**, vanaf hier zijn links te vinden naar de 12 SRA pagina's van het onderzoek. 
 
 ### Stap 1: SRA bestanden downloaden
-De eerste stap in de analyse is het downloaden van de `.fastq` bestanden van SRA. 
+De eerste stap in de analyse is het downloaden van de `.fastq` bestanden van SRA. De volgende 12 samples moeten gedownload worden:
 
 * SRR13114670
 * SRR13114671
@@ -53,3 +53,10 @@ De eerste stap in de analyse is het downloaden van de `.fastq` bestanden van SRA
 * SRR13114679
 * SRR13114680
 * SRR13114681
+
+Met het onderstaande commando worden twee `.fastq` bestanden gedownload, een met de forward reads en een met de reverse reads.
+
+```{bash, eval=FALSE}
+fasterq-dump SRR13114670
+```
+
