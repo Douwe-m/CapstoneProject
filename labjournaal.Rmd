@@ -64,29 +64,40 @@ fasterq-dump SRR13114670
 Op de `.fastq` bestanden moet als eerst een kwaliteitscontrole uitgevoerd worden, hiervoor wordt gebruik gemaakt van FASTQC. 
 
 ### Stap 3: trimmen & filteren
-Trimmen: Trimmomatic-0.36 cutting Illumina TruSeq adapters from the reads, cutting Illumina TruSeq adapters from the reads, and read length below 36 bp was dropped
+Met behulp van Trimmomatic (v0.39) zijn de adaptersequenties getrimd en is er gefilterd op reads met een minimale lengte van 36. Het onderstaande commando is gebruikt om de reads van sample SRR13114670 te trimmen en filteren.
 
 ```{bash, eval=FALSE}
-trimmomatic PE reads_1.fastq reads_2.fastq \
-  outputFile1P.fastq outputFile1U.fastq outputFile2P.fastq outputFile2U.fastq \
-  MINLEN:36 \
-  ILLUMINACLIP:TruSeq3-PE.fa:2:30:1
+java -jar ../../Trimmomatic-0.39/trimmomatic-0.39.jar PE ../../raw_data/sample_SRR13114670/SRR13114670_1.fastq ../../raw_data/sample_SRR13114670/SRR13114670_1.fastq trimmed_SRR13114670_1_p.fastq trimmed_SRR13114670_1_u.fastq trimmed_SRR13114670_2_p.fastq trimmed_SRR13114670_2_u.fastq ILLUMINACLIP:TruSeq3-PE.fa:2:30:1 MINLEN:36 SLIDINGWINDOW:4:20 AVGQUAL:20
 ```
 
+Het resultaat hiervan zijn vier `.fastq` files. 
 
 ### Stap 4: genoom indexeren met STAR
+Het referentiegenoom van tarwe is met het volgende commando gedownload
+
+```{bash, eval=FALSE}
+wget "https://urgi.versailles.inrae.fr/download/iwgsc/IWGSC_RefSeq_Assemblies/v2.1//iwgsc_refseqv2.1_assembly.fa.zip"
+```
+
 https://physiology.med.cornell.edu/faculty/skrabanek/lab/angsd/lecture_notes/STARmanual.pdf
 ```{bash, eval=FALSE}
-STAR --runThreadN ... \
+STAR --runThreadN 80 \
 --runMode genomeGenerate \
---genomeDir ... \
---genomeFastaFiles ...\
---sjdbGTFfile ... \
+--genomeDir wheat_genome/genome_indices \
+--genomeFastaFiles wheat_genome/iwgsc_refseqv2.1_assembly.fa\
+--sjdbGTFfile iwgsc_refseqv2.1_annotation_200916_HC.gff3 \
 --sjdbOverhang 100
+--sjdbGTFtagExonParentTranscript Parent
 
 ```
 
 ### Stap 5: reads mappen tegen genoom met STAR
+
+```{bash, eval=FALSE}
+STAR --genomeDir ... \
+     --readFilesIn resources/A549_0_1chr10_1.fastq.gz resources/A549_0_1chr10_2.fastq.gz \
+     --runThreadN 80
+```
 
 ### Stap 6: featureCounts
 https://hbctraining.github.io/Intro-to-rnaseq-hpc-O2/lessons/05_counting_reads.html
