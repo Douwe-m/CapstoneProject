@@ -9,12 +9,13 @@ De gebruikte cultivar is Triticum aestivum cv. Bobwhite S26 s. Zaden werden in g
  ## Stappen uit het artikel
  
 - QC: fastqc
-- Trimmen: Trimmomatic-0.36 (cutting Illumina TruSeq adapters from the reads, cutting Illumina TruSeq adapters from the reads)
+- Trimmen: Trimmomatic-0.36 (cutting Illumina TruSeq adapters from the reads)
 - Mappen: STAR 2.7.3a (allowing maximum 5 bp mismatches, WGSC wheat genome assembly RefSeq v1.0)
 - featureCounts v1.6.4
 - DEseq2 1.26.0
 
 ## To Do
- - [ ] SRA data downloaden
- - [ ] QC
- - [ ] [Quantifying with Salmon](http://master.bioconductor.org/packages/release/workflows/vignettes/rnaseqGene/inst/doc/rnaseqGene.html#quantifying-with-salmon)
+ - [X] SRA data downloaden
+ - [X] QC
+ - [ ] [Genoom indexeren](https://physiology.med.cornell.edu/faculty/skrabanek/lab/angsd/lecture_notes/STARmanual.pdf)
+ - [ ] [Mappen met STAR](https://physiology.med.cornell.edu/faculty/skrabanek/lab/angsd/lecture_notes/STARmanual.pdf)
