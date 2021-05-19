@@ -104,8 +104,8 @@ STAR --runThreadN 80 \
 ### Stap 5: reads mappen tegen genoom met STAR
 
 ```{bash, eval=FALSE}
-STAR --genomeDir ... \
-     --readFilesIn resources/A549_0_1chr10_1.fastq.gz resources/A549_0_1chr10_2.fastq.gz \
+STAR --genomeDir wheat_genome/genome_indices \
+     --readFilesIn trimmed_data/sample_SRR13114670/trimmed_SRR13114670_1_p.fastq trimmed_data/sample_SRR13114670/trimmed_SRR13114670_2_p.fastq \
      --runThreadN 80
 ```
 
