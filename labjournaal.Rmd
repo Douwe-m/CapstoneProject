@@ -38,7 +38,7 @@ De data die verkregen is voor dit onderzoek is verkregen uit de NCBI GEO databas
 ```{r, message=FALSE, echo=FALSE}
 rawdata <- read.table(file = "~/Documents/project_analysis_of_gene_expression/CapstoneProject/Gene Level Raw Counts.csv", sep = ",", header = TRUE)
 rawdata[2:13] <- lapply(rawdata[2:13], as.numeric)
-# stukje code waardoor de tabel goed wordt weergegeven.
+knitr::kable(head(rawdata[,c(1,2,5,8,11)], caption = "De eerste zes regels van een pileup output."))
 ```
 
 De data is verdeeld in 14 kolommen. In de eerste kolom wordt de gene name weergegeven zoals deze in EnsemblPlants database beschreven staat. In de daarop volgende kolommen staan de samples beschreven met de bijbehorende counts per gene name. Er is gebruik gemaakt van 4 samples, elke sample bevat 3 replicaten. De samples die vergeleken gaan worden op basis van DEG's zijn: Leaf_Fe, Leaf_control en Root_Fe en Root_control. In elke rij staat voor elke gene name het aantal getelde reads per sample.
@@ -104,8 +104,8 @@ STAR --runThreadN 80 \
 ### Stap 5: reads mappen tegen genoom met STAR
 
 ```{bash, eval=FALSE}
-STAR --genomeDir wheat_genome/genome_indices \
-     --readFilesIn trimmed_data/sample_SRR13114670/trimmed_SRR13114670_1_p.fastq trimmed_data/sample_SRR13114670/trimmed_SRR13114670_2_p.fastq \
+STAR --genomeDir ... \
+     --readFilesIn resources/A549_0_1chr10_1.fastq.gz resources/A549_0_1chr10_2.fastq.gz \
      --runThreadN 80
 ```
 
