@@ -32,6 +32,16 @@ De dataset van het artikel is opgeslagen in de [GEO database](https://www.ncbi.n
 # Analyse
 
 ## Op basis van count matrix
+## Data
+De data die verkregen is voor dit onderzoek is verkregen uit de NCBI GEO database. Omdat de data niet alle raw gene counts bevatte is actie ondernomen. Met de nieuwe verkregen dataset van de onderzoekers waarin wel alle raw gene counts aanwezig waren is verdere analyse uitgevoerd. Het format van de data is een csv-file. De data ziet er als volgt uit:
+
+```{r, message=FALSE, echo=FALSE}
+rawdata <- read.table(file = "~/Documents/project_analysis_of_gene_expression/CapstoneProject/Gene Level Raw Counts.csv", sep = ",", header = TRUE)
+rawdata[2:13] <- lapply(rawdata[2:13], as.numeric)
+# stukje code waardoor de tabel goed wordt weergegeven.
+```
+
+De data is verdeeld in 14 kolommen. In de eerste kolom wordt de gene name weergegeven zoals deze in EnsemblPlants database beschreven staat. In de daarop volgende kolommen staan de samples beschreven met de bijbehorende counts per gene name. Er is gebruik gemaakt van 4 samples, elke sample bevat 3 replicaten. De samples die vergeleken gaan worden op basis van DEG's zijn: Leaf_Fe, Leaf_control en Root_Fe en Root_control. In elke rij staat voor elke gene name het aantal getelde reads per sample.
 
 ## Op basis van fastq
 
