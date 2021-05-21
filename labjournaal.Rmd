@@ -36,7 +36,7 @@ De dataset van het artikel is opgeslagen in de [GEO database](https://www.ncbi.n
 De data die verkregen is voor dit onderzoek is verkregen uit de NCBI GEO database. Omdat de data niet alle raw gene counts bevatte is actie ondernomen. Met de nieuwe verkregen dataset van de onderzoekers waarin wel alle raw gene counts aanwezig waren is verdere analyse uitgevoerd. Het format van de data is een csv-file. De data ziet er als volgt uit:
 
 ```{r, message=FALSE, echo=FALSE}
-rawdata <- read.table(file = "raw_counts.csv", sep = ",", header = TRUE)
+rawdata <- read.table(file = "data/raw_counts.csv", sep = ",", header = TRUE)
 rawdata[2:13] <- lapply(rawdata[2:13], as.numeric)
 knitr::kable(head(rawdata[,c(1,2,5,8,11)], caption = "De eerste zes regels van een pileup output."))
 ```
@@ -73,13 +73,20 @@ fasterq-dump SRR13114670
 ```
 
 ### Stap 2: QC
-Op de `.fastq` bestanden moet als eerst een kwaliteitscontrole uitgevoerd worden, hiervoor wordt gebruik gemaakt van FASTQC. 
+Op de `.fastq` bestanden wordt als eerste een kwaliteitscontrole uitgevoerd worden, hiervoor wordt gebruik gemaakt van FASTQC. In figuur 1 is het resultaat van een kwaliteitscontrole op de forward reads van de ruwe data van sample Roots_Low Fe_1 te zien. In de figuur is te zien dat er zich veel spreiding in de kwaliteit van de data aanwezig is. Daar kan voor gecorrigeerd in de volgende stap: trimmen en filteren.
+
+![Kwaliteitscontrole op de forward reads van de ruwe data van sample Roots_Low Fe_1](figuren/qc_raw_data_f.png){width=75%}
 
 ### Stap 3: trimmen & filteren
 Met behulp van Trimmomatic (v0.39) zijn de adaptersequenties getrimd en is er gefilterd op reads met een minimale lengte van 36. Het onderstaande commando is gebruikt om de reads van sample SRR13114670 te trimmen en filteren.
 
 ```{bash, eval=FALSE}
-java -jar ../../Trimmomatic-0.39/trimmomatic-0.39.jar PE ../../raw_data/sample_SRR13114670/SRR13114670_1.fastq ../../raw_data/sample_SRR13114670/SRR13114670_1.fastq trimmed_SRR13114670_1_p.fastq trimmed_SRR13114670_1_u.fastq trimmed_SRR13114670_2_p.fastq trimmed_SRR13114670_2_u.fastq ILLUMINACLIP:TruSeq3-PE.fa:2:30:1 MINLEN:36 SLIDINGWINDOW:4:20 AVGQUAL:20
+java -jar ../../Trimmomatic-0.39/trimmomatic-0.39.jar PE 
+  ../../raw_data/sample_SRR13114670/SRR13114670_1.fastq 
+  ../../raw_data/sample_SRR13114670/SRR13114670_1.fastq 
+  trimmed_SRR13114670_1_p.fastq trimmed_SRR13114670_1_u.fastq     
+  trimmed_SRR13114670_2_p.fastq trimmed_SRR13114670_2_u.fastq 
+  ILLUMINACLIP:TruSeq3-PE.fa:2:30:1 SLIDINGWINDOW:4:20 AVGQUAL:20 MINLEN:36
 ```
 
 Het resultaat hiervan zijn vier `.fastq` files. 
