@@ -78,7 +78,7 @@ Op de `.fastq` bestanden wordt als eerste een kwaliteitscontrole uitgevoerd word
 ![Kwaliteitscontrole op de forward reads van de ruwe data van sample Roots_Low Fe_1](figuren/qc_raw_data_f.png){width=75%}
 
 ### Stap 3: trimmen & filteren
-Met behulp van Trimmomatic (v0.39) zijn de adaptersequenties getrimd en is er gefilterd op reads met een minimale lengte van 36. Het onderstaande commando is gebruikt om de reads van sample SRR13114670 te trimmen en filteren.
+Aangezien de ruwe data niet van voldoende kwaliteit is, zulllen de reads getrimd en gefilterd worden. Daarnaast bevatten de reads nog adaptersequenties die ook verwijderd moeten worden. Voor dit proces zal gebruik gemaakt worden van Trimmomatic (v0.39). Hiermee zijn de adaptersequenties van de reads verwijderd, daarnaast zijn nog de volgende parameters meegegeven: SLIDINGWINDOW met een window van 4 en een kwaliteit van 20, een gemiddelde kwaliteit van minimaal 20 en een minimum lengte van 36 bp. Het onderstaande commando is gebruikt om de forward reads van sample Roots_Low Fe_1 te trimmen en filteren.
 
 ```{bash, eval=FALSE}
 java -jar ../../Trimmomatic-0.39/trimmomatic-0.39.jar PE 
@@ -89,16 +89,18 @@ java -jar ../../Trimmomatic-0.39/trimmomatic-0.39.jar PE
   ILLUMINACLIP:TruSeq3-PE.fa:2:30:1 SLIDINGWINDOW:4:20 AVGQUAL:20 MINLEN:36
 ```
 
-Het resultaat hiervan zijn vier `.fastq` files. 
+Met FASTQC is nogmaals een rapport gegenereerd om de kwaliteit van de data te inspecteren. Figuur 2 laat een figuur hieruit zien. In vergelijking tot figuur 1 is de spreiding van de kwaliteit nu een stuk kleiner. Verder zijn korte reads verwijderd, wat niet zichtbaar is in deze figuur. De data is nu van voldoende kwaliteit voor de volgende stap.
 
-### Stap 4: genoom indexeren met STAR
-Het referentiegenoom van tarwe is met het volgende commando gedownload
+![Kwaliteitscontrole op de forward reads van de getrimde en gefilterde data van sample Roots_Low Fe_1](figuren/qc_trimmed_data_f.png){width=75%}
+
+### Stap 4.1: genoom indexeren met STAR
+Voordat reads tegen het referentiegenoom gemapt kunnen worden, moet het genoom eerst geïndexeerd worden. Aangezien STAR gebruikt wordt voor het mappen,  zal hiermee ook het indexeren uitgevoerd worden. Hiervoor is een `.fasta` bestand nodig met het referentiegenoom en een annotatie bestand. Met het onderstaande commando wordt het referentiegenoom gedownload.
 
 ```{bash, eval=FALSE}
-wget "https://urgi.versailles.inrae.fr/download/iwgsc/IWGSC_RefSeq_Assemblies/v2.1//iwgsc_refseqv2.1_assembly.fa.zip"
+wget "https://urgi.versailles.inrae.fr/download/iwgsc/IWGSC_RefSeq_Assemblies/v2.1/iwgsc_refseqv2.1_assembly.fa.zip"
 ```
 
-https://physiology.med.cornell.edu/faculty/skrabanek/lab/angsd/lecture_notes/STARmanual.pdf
+Daarna kan het geïndexeerd worden met het commando hieronder. Deze indexeringsstap zal eenmaal uitgevoerd worden, waarna dit telkens overnieuw gebruikt kan worden in het mappen.
 ```{bash, eval=FALSE}
 STAR --runThreadN 80 \
 --runMode genomeGenerate \
@@ -107,10 +109,9 @@ STAR --runThreadN 80 \
 --sjdbGTFfile iwgsc_refseqv2.1_annotation_200916_HC.gff3 \
 --sjdbOverhang 100
 --sjdbGTFtagExonParentTranscript Parent
-
 ```
 
-### Stap 5: reads mappen tegen genoom met STAR
+### Stap 4.2: reads mappen tegen genoom met STAR
 
 ```{bash, eval=FALSE}
 STAR --genomeDir ... \
@@ -118,5 +119,5 @@ STAR --genomeDir ... \
      --runThreadN 80
 ```
 
-### Stap 6: featureCounts
+### Stap 5: featureCounts
 https://hbctraining.github.io/Intro-to-rnaseq-hpc-O2/lessons/05_counting_reads.html
