@@ -32,11 +32,11 @@ De dataset van het artikel is opgeslagen in de [GEO database](https://www.ncbi.n
 # Analyse
 
 ## Op basis van count matrix
-## Data
+### Data
 De data die verkregen is voor dit onderzoek is verkregen uit de NCBI GEO database. Omdat de data niet alle raw gene counts bevatte is actie ondernomen. Met de nieuwe verkregen dataset van de onderzoekers waarin wel alle raw gene counts aanwezig waren is verdere analyse uitgevoerd. Het format van de data is een csv-file. De data ziet er als volgt uit:
 
 ```{r, message=FALSE, echo=FALSE}
-rawdata <- read.table(file = "~/Documents/project_analysis_of_gene_expression/CapstoneProject/Gene Level Raw Counts.csv", sep = ",", header = TRUE)
+rawdata <- read.table(file = "data/raw_counts.csv", sep = ",", header = TRUE)
 rawdata[2:13] <- lapply(rawdata[2:13], as.numeric)
 knitr::kable(head(rawdata[,c(1,2,5,8,11)], caption = "De eerste zes regels van de CSV file met de raw count data."))
 ```
@@ -61,12 +61,10 @@ ggplot(transformed_raw_data, aes(x = sample, y = log2_value))+
 ```
 
 
-
-
 ## Op basis van fastq
 
 ### Data
-Een referentiegenoom van tarwe is beschikbaar via deze [**site**](https://www.wheatgenome.org/Tools-and-Resources/IWGSC-RefSeq-v2.1-Assembly-and-Annotation-now-freely-available-at-URGI-and-NCBI). Een annotatie bestand in ggf3 formaat is te vinden op deze [webstite](https://urgi.versailles.inrae.fr/download/iwgsc/IWGSC_RefSeq_Annotations/v2.1/), daarbij is gekozen voor het `	iwgsc_refseqv2.1_gene_annotation_200916.zip` bestand. Vervolgens zijn de volgende bestanden opgeslagen: `iwgsc_refseqv2.1_annotation_200916_LC.gff3`, `iwgsc_refseqv2.1_annotation_200916_HC.gff3`. De accession code voor het BioProject op de NCBI website is **PRJNA680330**, vanaf hier zijn links te vinden naar de 12 SRA pagina's van het onderzoek. 
+Voor de analyse zijn een aantal bestanden met relevante data. Een referentiegenoom van tarwe is beschikbaar via deze [**site**](https://www.wheatgenome.org/Tools-and-Resources/IWGSC-RefSeq-v2.1-Assembly-and-Annotation-now-freely-available-at-URGI-and-NCBI). Een annotatie bestand in ggf3 formaat is te vinden op deze [**webstite**](https://urgi.versailles.inrae.fr/download/iwgsc/IWGSC_RefSeq_Annotations/v2.1/), daarbij is gekozen voor het `iwgsc_refseqv2.1_gene_annotation_200916.zip` bestand. Vervolgens is het volgende bestanden opgeslagen: `iwgsc_refseqv2.1_annotation_200916_HC.gff3`. Ten derde zijn de data afkomstig van de sequencer nodig. De accession code voor het BioProject op de NCBI website is **PRJNA680330**, vanaf hier zijn links te vinden naar de 12 SRA pagina's van het onderzoek. 
 
 ### Stap 1: SRA bestanden downloaden
 De eerste stap in de analyse is het downloaden van de `.fastq` bestanden van SRA. De volgende 12 samples moeten gedownload worden:
@@ -84,32 +82,42 @@ De eerste stap in de analyse is het downloaden van de `.fastq` bestanden van SRA
 * SRR13114680
 * SRR13114681
 
-Met het onderstaande commando worden twee `.fastq` bestanden gedownload, een met de forward reads en een met de reverse reads. 
+Met het onderstaande commando wordt de data van één sample gedownload. Dit resulteert in twee `.fastq` bestanden, één met de forward reads en één met de reverse reads.
 
 ```{bash, eval=FALSE}
 fasterq-dump SRR13114670
 ```
 
 ### Stap 2: QC
-Op de `.fastq` bestanden moet als eerst een kwaliteitscontrole uitgevoerd worden, hiervoor wordt gebruik gemaakt van FASTQC. 
+Op de `.fastq` bestanden wordt als eerste een kwaliteitscontrole uitgevoerd worden, hiervoor wordt gebruik gemaakt van FASTQC. In figuur 1 is het resultaat van een kwaliteitscontrole op de forward reads van de ruwe data van sample Roots_Low Fe_1 te zien. In de figuur is te zien dat er zich veel spreiding in de kwaliteit van de data aanwezig is. Daar kan voor gecorrigeerd in de volgende stap: trimmen en filteren.
+
+![Kwaliteitscontrole op de forward reads van de ruwe data van sample Roots_Low Fe_1](figuren/qc_raw_data_f.png){width=75%}
 
 ### Stap 3: trimmen & filteren
-Met behulp van Trimmomatic (v0.39) zijn de adaptersequenties getrimd en is er gefilterd op reads met een minimale lengte van 36. Het onderstaande commando is gebruikt om de reads van sample SRR13114670 te trimmen en filteren.
+Aangezien de ruwe data niet van voldoende kwaliteit is, zulllen de reads getrimd en gefilterd worden. Daarnaast bevatten de reads nog adaptersequenties die ook verwijderd moeten worden. Voor dit proces zal gebruik gemaakt worden van Trimmomatic (v0.39). Hiermee zijn de adaptersequenties van de reads verwijderd, daarnaast zijn nog de volgende parameters meegegeven: SLIDINGWINDOW met een window van 4 en een kwaliteit van 20, een gemiddelde kwaliteit van minimaal 20 en een minimum lengte van 36 bp. Het onderstaande commando is gebruikt om de forward reads van sample Roots_Low Fe_1 te trimmen en filteren.
 
 ```{bash, eval=FALSE}
-java -jar ../../Trimmomatic-0.39/trimmomatic-0.39.jar PE ../../raw_data/sample_SRR13114670/SRR13114670_1.fastq ../../raw_data/sample_SRR13114670/SRR13114670_1.fastq trimmed_SRR13114670_1_p.fastq trimmed_SRR13114670_1_u.fastq trimmed_SRR13114670_2_p.fastq trimmed_SRR13114670_2_u.fastq ILLUMINACLIP:TruSeq3-PE.fa:2:30:1 MINLEN:36 SLIDINGWINDOW:4:20 AVGQUAL:20
+java -jar ../../Trimmomatic-0.39/trimmomatic-0.39.jar PE 
+  ../../raw_data/sample_SRR13114670/SRR13114670_1.fastq 
+  ../../raw_data/sample_SRR13114670/SRR13114670_1.fastq 
+  trimmed_SRR13114670_1_p.fastq trimmed_SRR13114670_1_u.fastq     
+  trimmed_SRR13114670_2_p.fastq trimmed_SRR13114670_2_u.fastq 
+  ILLUMINACLIP:TruSeq3-PE.fa:2:30:1 SLIDINGWINDOW:4:20 AVGQUAL:20 MINLEN:36
 ```
 
-Het resultaat hiervan zijn vier `.fastq` files. 
+Met FASTQC is nogmaals een rapport gegenereerd om de kwaliteit van de data te inspecteren. Figuur 2 laat een figuur hieruit zien. In vergelijking tot figuur 1 is de spreiding van de kwaliteit nu een stuk kleiner. Verder zijn korte reads verwijderd, wat niet zichtbaar is in deze figuur. De data is nu van voldoende kwaliteit voor de volgende stap.
 
-### Stap 4: genoom indexeren met STAR
-Het referentiegenoom van tarwe is met het volgende commando gedownload
+![Kwaliteitscontrole op de forward reads van de getrimde en gefilterde data van sample Roots_Low Fe_1](figuren/qc_trimmed_data_f.png){width=75%}
+
+### Stap 4.1: genoom indexeren met STAR
+Voordat reads tegen het referentiegenoom gemapt kunnen worden, moet het genoom eerst geïndexeerd worden. Aangezien STAR gebruikt wordt voor het mappen,  zal hiermee ook het indexeren uitgevoerd worden. Hiervoor is een `.fasta` bestand nodig met het referentiegenoom en een annotatie bestand. Met het onderstaande commando wordt het referentiegenoom gedownload.
 
 ```{bash, eval=FALSE}
-wget "https://urgi.versailles.inrae.fr/download/iwgsc/IWGSC_RefSeq_Assemblies/v2.1//iwgsc_refseqv2.1_assembly.fa.zip"
+wget "https://urgi.versailles.inrae.fr/download/iwgsc/IWGSC_RefSeq_Assemblies/v2.1/iwgsc_refseqv2.1_assembly.fa.zip"
 ```
 
-https://physiology.med.cornell.edu/faculty/skrabanek/lab/angsd/lecture_notes/STARmanual.pdf
+Daarna kan het geïndexeerd worden met het commando hieronder. Deze indexeringsstap zal eenmaal uitgevoerd worden, waarna dit telkens overnieuw gebruikt kan worden in het mappen.
+
 ```{bash, eval=FALSE}
 STAR --runThreadN 80 \
 --runMode genomeGenerate \
@@ -118,16 +126,17 @@ STAR --runThreadN 80 \
 --sjdbGTFfile iwgsc_refseqv2.1_annotation_200916_HC.gff3 \
 --sjdbOverhang 100
 --sjdbGTFtagExonParentTranscript Parent
-
 ```
 
-### Stap 5: reads mappen tegen genoom met STAR
+### Stap 4.2: reads mappen tegen genoom met STAR
+Nu het genoom geïndexeerd is kunnen de reads tegen het referentiegenoom gemapt worden. Met het onderstaande commando wordt dit gedaan. Dit resulteert in een `.SAM` file, waarin 16.598.504 (72.41%) reads gemapt zijn tegen het genoom.
 
 ```{bash, eval=FALSE}
-STAR --genomeDir ... \
-     --readFilesIn resources/A549_0_1chr10_1.fastq.gz resources/A549_0_1chr10_2.fastq.gz \
+STAR --genomeDir wheat_genome/genome_indices \
+     --readFilesIn trimmed_data/sample_SRR13114670/test/trimmed_SRR13114670_1_p.fastq \
+       trimmed_data/sample_SRR13114670/test/trimmed_SRR13114670_2_p.fastq \
      --runThreadN 80
 ```
 
-### Stap 6: featureCounts
+### Stap 5: featureCounts
 https://hbctraining.github.io/Intro-to-rnaseq-hpc-O2/lessons/05_counting_reads.html
