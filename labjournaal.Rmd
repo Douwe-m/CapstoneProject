@@ -38,10 +38,30 @@ De data die verkregen is voor dit onderzoek is verkregen uit de NCBI GEO databas
 ```{r, message=FALSE, echo=FALSE}
 rawdata <- read.table(file = "~/Documents/project_analysis_of_gene_expression/CapstoneProject/Gene Level Raw Counts.csv", sep = ",", header = TRUE)
 rawdata[2:13] <- lapply(rawdata[2:13], as.numeric)
-knitr::kable(head(rawdata[,c(1,2,5,8,11)], caption = "De eerste zes regels van een pileup output."))
+knitr::kable(head(rawdata[,c(1,2,5,8,11)], caption = "De eerste zes regels van de CSV file met de raw count data."))
 ```
 
 De data is verdeeld in 14 kolommen. In de eerste kolom wordt de gene name weergegeven zoals deze in EnsemblPlants database beschreven staat. In de daarop volgende kolommen staan de samples beschreven met de bijbehorende counts per gene name. Er is gebruik gemaakt van 4 samples, elke sample bevat 3 replicaten. De samples die vergeleken gaan worden op basis van DEG's zijn: Leaf_Fe, Leaf_control en Root_Fe en Root_control. In elke rij staat voor elke gene name het aantal getelde reads per sample.
+
+## Exploratory Data Analysis
+Om verder onderzoek te kunnen doen moet eerst de ruwe data geanalyseerd en gevisualiseerd worden. Een veel gebruikte plot om naar de verschillen in aantallen te kijken is de boxplot. De boxplot werkt doormiddel van boxen en is een weergave van een dataset waarbij een minimum, eerste kwartiel, mediaan, derde kwartiel en een maximum worden weergegeven. Daarnaast worden de uitschieters als bolletjes aangeduid. Voor de gebruikte dataset is een boxplot gemaakt. De counts zijn eerst omgezet naar de log2 van de counts, dit is gedaan omdat het nummerieke bereik van de counts erg groot kan zijn. De gecreëerde boxplot wordt hieronder weergegeven:
+
+```{r, message=FALSE, echo=FALSE}
+library(tidyr)
+library(ggplot2)
+
+rawdata_log2 <- cbind(log2(rawdata[,2:13] + 1), rawdata[,1])
+transformed_raw_data <- pivot_longer(rawdata_log2, cols = 1:12, names_to = "sample", values_to = "log2_value")
+
+ggplot(transformed_raw_data, aes(x = sample, y = log2_value))+ 
+  geom_boxplot(fill = "steelblue") + 
+  theme_light() + 
+  theme(axis.text.x = element_text(angle  = 45, hjust = 1)) + 
+  labs(x = "Sample", y = "log2(counts)")
+```
+
+
+
 
 ## Op basis van fastq
 
