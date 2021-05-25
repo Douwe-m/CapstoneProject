@@ -17,7 +17,5 @@ De gebruikte cultivar is Triticum aestivum cv. Bobwhite S26 s. Zaden werden in g
 ## To Do
  - [X] SRA data downloaden
  - [X] QC
- - [X] [Genoom indexeren](https://physiology.med.cornell.edu/faculty/skrabanek/lab/angsd/lecture_notes/STARmanual.pdf)
- - [X] [Mappen met STAR](https://physiology.med.cornell.edu/faculty/skrabanek/lab/angsd/lecture_notes/STARmanual.pdf)
- - [ ] Homeoroq?
- - [ ] featureCounts
+ - [ ] [Genoom indexeren](https://physiology.med.cornell.edu/faculty/skrabanek/lab/angsd/lecture_notes/STARmanual.pdf)
+ - [ ] [Mappen met STAR](https://physiology.med.cornell.edu/faculty/skrabanek/lab/angsd/lecture_notes/STARmanual.pdf)
