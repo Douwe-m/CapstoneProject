@@ -65,6 +65,19 @@ In de box wordt voor elk sample de mediaan weergegeven. Dit is de dikke zwarte l
 
 Wat opvalt aan de data is dat de Leaf_Control samples een gelijke mediaan hebben. Daarnaast heeft deze groep wel de meeste uitschieters. De andere drie groepen laten bij de samples een afnemend box niveau zien, er zijn geen grootte verschillen waarneembaar. Op dit gebied is dan ook besloten om geen samples weg te laten in het verdere onderzoek.
 
+### Density plot
+
+```{r, message=FALSE, echo=FALSE}
+library(scales)
+library(affy)
+myColors <- hue_pal()(4)
+plotDensity(log2(rawdata[,-1] + 0.1), col=rep(myColors, each=3),
+            lty=c(1:ncol(rawdata[,-1])), xlab='Log2(count) of the raw data',
+            ylab = 'Density', main='Density plot')
+legend('topright', names(rawdata[,-1]), lty=c(1:ncol(rawdata[,-1])),
+       col=rep(myColors, each=3))
+```
+
 ## Op basis van fastq
 
 ### Data
