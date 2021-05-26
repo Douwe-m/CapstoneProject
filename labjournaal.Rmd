@@ -152,6 +152,14 @@ featureCounts -a iwgsc_refseqv2.1_annotation_200916_HC.gff3 \
               Aligned.out.sam
               
 head counts/output.txt | cut -f 1,7 
+
+featureCounts -a iwgsc_refseqv2.1_annotation_200916_HC.gff3 \
+              -o counts/new_output.txt  \
+              -T 64 \
+              -g ID \
+              -t mRNA \
+              -p 
+              Aligned.out.sam
 ```
 
 Table: Tabel met de eerste acht regels van een count matrix gebasseerd op één sample, namelijk Roots_Low Fe_1.
@@ -167,4 +175,3 @@ Table: Tabel met de eerste acht regels van een count matrix gebasseerd op één 
 | TraesCS1A03G0001300.1 | 2 |
 | TraesCS1A03G0001400.1 | 3 |
 
-test
