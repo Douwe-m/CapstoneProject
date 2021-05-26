@@ -1,0 +1,20 @@
+#Inleiding -> deel i
+Een tekort aan ijzer kan de gewasopbrengst sterk beïnvloeden. Daarnaast speelt ijzer een belangrijke rolin het metabolisme en is het nodig voor plantengroei. IJzer fungeert onder andere als cofactor van veelenzymen. Verder is het betrokken bij de elektronentransportketen en fotosynthese. In eerdere onderzoekenis al onderzoek gedaan naar ijzertekorten in verschillende planten, echter is het achterliggend moleculairemechanisme betreffende ijzertekorten niet bekend voor tarwe. Met behulp van RNA-seq zal getracht wordendit mechanisme te ontrafelen. (Wang et al., 2020)
+
+#Inleiding -> deel ii
+
+#Methode -> data analyse Diemer
+#Methode -> gebruikte software analyse Diemer
+#Methode -> stappen analyse Diemer
+
+#Methode -> data analyse Douwe
+#Methode -> gebruikte software Douwe 
+#Methode -> stappen analyse Douwe
+
+#Resultaten
+
+#Conclusie
+
+#Discussie
+
+#Referenties
