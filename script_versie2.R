@@ -104,3 +104,93 @@ ggplot(mdsPoisData, aes(x_coord, y_coord, color = groups, label = coldata)) +
 #4
 ## Pre Processing data for DEG analysis
 counts.fpm <- log2( fpm(ddsMat, robust = TRUE) + 1 )
+
+#DESeq2
+
+dds <- DESeqDataSetFromMatrix(countData = rawdata,
+                              colData = data.frame(condition=condition),
+                              design = ~ 0+condition)
+results_dds <- DESeq(dds)
+
+resultsNames(results_dds)
+res <- results(results_dds, contrast = c("condition", "Leaf_Fe", 
+                                         "Leaf_Control"))
+res1 <- results(results_dds, contrast = c("condition", "Root_Fe", 
+                                          "Root_Control"))
+summary(res)
+
+## Volcano
+
+# Load packages
+library(gridExtra)
+# Determine the p-value threshold and log fold change 
+deseq.results <- cbind(rld, as.data.frame(res@listData))
+pval_threshold <- 0.05
+logfc_threshold <- 1
+deseq.threshold <- as.factor(abs(deseq.results$log2FoldChange) >= logfc_threshold & 
+                               deseq.results$padj < pval_threshold)
+# Plot the data to a volcano plot
+g = ggplot(data=deseq.results, 
+           aes(x=log2FoldChange, y=-log10(padj), 
+               colour=deseq.threshold)) +
+  geom_point(alpha=0.4, size=1.75) +
+  theme(legend.position = "none") +
+  theme_bw() + theme(legend.position="none") +
+  geom_vline(xintercept = logfc_threshold) +
+  geom_vline(xintercept = -logfc_threshold) +
+  geom_hline(yintercept = -log10(pval_threshold)) +
+  xlab("log2 fold change") + ylab("-log10 padj") +
+  ggtitle("Leaf_Fe vs Leaf_Control DEGs according to DESeq2 with adjusted 
+          p-value <= 0.05 and absolute FC >= 2") +
+  theme(plot.title = element_text(size = 8)) +
+  geom_text_repel(aes(label=ifelse(padj < 0.1e-6 & abs(log2FoldChange) 
+                                   >= logfc_threshold, row.names(deseq.results), 
+                                   '')))
+# Make the data compatible for sample 2
+deseq.results1 <- cbind(rld, as.data.frame(res1@listData))
+deseq.threshold1 <- as.factor(abs(deseq.results1$log2FoldChange) 
+                              >= logfc_threshold & deseq.results1$padj < pval_threshold)
+
+g1 = ggplot(data=deseq.results1, 
+            aes(x=log2FoldChange, y=-log10(padj),
+                colour=deseq.threshold1)) +
+  geom_point(alpha=0.4, size=1.75) +
+  theme(legend.position = "none") +
+  theme_bw() + theme(legend.position="none") +
+  geom_vline(xintercept = logfc_threshold) +
+  geom_vline(xintercept = -logfc_threshold) +
+  geom_hline(yintercept = -log10(pval_threshold)) +
+  xlab("log2 fold change") + ylab("-log10 padj") +
+  ggtitle("Root_Fe vs Root_Control DEGs according to DESeq2 with FDR <= 0.05 and absolute FC >= 2") +
+  theme(plot.title = element_text(size = 8)) +
+  geom_text_repel(aes(label=ifelse(padj < 0.1e-6 & abs(log2FoldChange) 
+                                   >= logfc_threshold,
+                                   row.names(deseq.results1), '')))
+
+grid.arrange(g, g1, nrow = 1) 
+
+# Venn Diagram
+
+DESeq.degs <- row.names(deseq.results[which(deseq.threshold == TRUE),])
+DESeq.degs1 <- row.names(deseq.results1[which(deseq.threshold1 == TRUE),])
+
+library(VennDiagram)
+
+deg.intersect = length(intersect(DESeq.degs, DESeq.degs1))
+deg.venn <- list('intersect' = deg.intersect,
+                 'Leaf' = length(DESeq.degs),
+                 'Root' = length(DESeq.degs1))
+
+
+venn.plot <- draw.pairwise.venn(deg.venn$Leaf, deg.venn$Root, deg.venn$intersect,
+                                category = c("Leaf", "Root"), scaled = F,
+                                fill = c("light blue", "pink"), alpha = rep(0.5, 2),
+                                cat.pos = c(0, 0))
+grid.draw(venn.plot)
+
+# Actually plot the plot
+grid.draw(venn.plot)
+
+library(dplyr)
+
+deseq.results %>% arrange(padj) %>% arrange(desc(log2FoldChange)) %>% head(10)
