@@ -348,19 +348,54 @@ STAR --runThreadN 80 \
 --genomeDir wheat_genome/genome_indices \
 --genomeFastaFiles wheat_genome/iwgsc_refseqv2.1_assembly.fa\
 --sjdbGTFfile iwgsc_refseqv2.1_annotation_200916_HC.gff3 \
---sjdbOverhang 100
+--sjdbOverhang 100 \
 --sjdbGTFtagExonParentTranscript Parent
 ```
 
 ### Stap 4.2: reads mappen tegen genoom met STAR
 Nu het genoom geïndexeerd is kunnen de reads tegen het referentiegenoom gemapt worden. Met het onderstaande commando wordt dit gedaan. Dit resulteert in een `.SAM` file, waarin 16.598.504 (72.41%) reads gemapt zijn tegen het genoom.
+https://hbctraining.github.io/Intro-to-rnaseq-hpc-O2/lessons/03_alignment.html
 
 ```{bash, eval=FALSE}
 STAR --genomeDir wheat_genome/genome_indices \
      --readFilesIn trimmed_data/sample_SRR13114670/test/trimmed_SRR13114670_1_p.fastq \
        trimmed_data/sample_SRR13114670/test/trimmed_SRR13114670_2_p.fastq \
-     --runThreadN 80
+     --runThreadN 80 \
+     --outSAMtype BAM
 ```
 
 ### Stap 5: featureCounts
+Uit de mapping stap is een `.SAM` file verkregen. Om nu te tellen hoe vaak een read tegen een bepaald transcript gemapt is, wordt `featureCounts` gebruikt. Dit commando heeft twee bestanden nodig: een annotatie bestand en een alignment bestand in `.SAM` of `.BAM` format. Met het commando hieronder wordt een count matrix voor met één sample gemaakt. In tabel 2 zijn de eerste acht regels van de count matrix te zien.
 https://hbctraining.github.io/Intro-to-rnaseq-hpc-O2/lessons/05_counting_reads.html
+
+```{bash, eval=FALSE}
+featureCounts -a iwgsc_refseqv2.1_annotation_200916_HC.gff3 \
+              -o counts/output.txt \
+              -g Parent \
+              -T 64 \
+              Aligned.out.sam
+              
+head counts/output.txt | cut -f 1,7 
+
+featureCounts -a iwgsc_refseqv2.1_annotation_200916_HC.gff3 \
+              -o counts/new_output.txt  \
+              -T 64 \
+              -g ID \
+              -t mRNA \
+              -p 
+              Aligned.out.sam
+```
+
+Table: Tabel met de eerste acht regels van een count matrix gebasseerd op één sample, namelijk Roots_Low Fe_1.
+
+| Gene ID | Count |
+|-|-|
+| TraesCS1A03G0000200.1 | 34 |
+| TraesCS1A03G0000400.1 | 32 |
+| TraesCS1A03G0000600.1 | 7 |
+| TraesCS1A03G0000800.1 | 43 |
+| TraesCS1A03G0001000.1 | 0 |
+| TraesCS1A03G0001200.1 | 0 |
+| TraesCS1A03G0001300.1 | 2 |
+| TraesCS1A03G0001400.1 | 3 |
+

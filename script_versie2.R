@@ -10,7 +10,7 @@ library(tidyr)
 
 #2
 ## loading CSV with raw counts in R, and make the integer columns numeric.
-rawdata <- read.table(file = "raw_counts.csv", sep = ",", header = TRUE)
+rawdata <- read.table(file = "data/raw_counts.csv", sep = ",", header = TRUE)
 rawdata[2:13] <- lapply(rawdata[2:13], as.numeric)
 
 ## Shows the first 5 lines of the table with rawdata. For the dimensions and structure of the data is used dim and str.

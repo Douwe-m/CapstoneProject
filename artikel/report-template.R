@@ -1,0 +1,6 @@
+## ----MDS-Figure, fig.width=5, echo=TRUE, eval=TRUE----------------------------
+library(png)
+library(grid)
+img <- readPNG("images/mds.png")
+grid.raster(img)
+
