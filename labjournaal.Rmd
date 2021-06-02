@@ -69,8 +69,8 @@ Voor de analyse zijn een aantal bestanden met relevante data. Een referentiegeno
 ### Stap 1: SRA bestanden downloaden
 De eerste stap in de analyse is het downloaden van de `.fastq` bestanden van SRA. De volgende 12 samples moeten gedownload worden:
 
-* SRR13114670
-* SRR13114671
+* SRR13114670 x
+* SRR13114671 x
 * SRR13114672
 * SRR13114673
 * SRR13114674
