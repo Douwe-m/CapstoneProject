@@ -364,38 +364,56 @@ STAR --genomeDir wheat_genome/genome_indices \
      --outSAMtype BAM
 ```
 
+Table: Mapping statistics
+
+|Sample|SRA Accession|Number of input reads|Uniquely mapped reads|reads mapped to multiple loci|
+|-|-|-|-|-|
+|Roots_LowFe_1|SRR13114670|22,924,347|16,598,504|2,572,236|
+|Roots_LowFe_2|SRR13114671|22,601,274|15,341,708|2,343,812|
+|Roots_LowFe_3|SRR13114672|16,880,752|10,241,379|1,545,672|
+|Roots_Control_1|SRR13114673|23,160,915|17,973,764|2,678,863|
+|Roots_Control_2|SRR13114674|20,028,02|14,959,171|2,264,441|
+|Roots_Control_3|SRR13114675|13,993,365|10,514,505|1,585,875|
+
+|reads unmapped: too short|reads unmapped: other|
+|-|-|
+|15,27%|0,74%|
+|20,68%|0,70%|
+|28,96%|0,86%|
+|9,76%|0,71%|
+|12,79%|0,82%|
+|12,85%|0,43%|
+
 ### Stap 5: featureCounts
 Uit de mapping stap is een `.SAM` file verkregen. Om nu te tellen hoe vaak een read tegen een bepaald transcript gemapt is, wordt `featureCounts` gebruikt. Dit commando heeft twee bestanden nodig: een annotatie bestand en een alignment bestand in `.SAM` of `.BAM` format. Met het commando hieronder wordt een count matrix voor met één sample gemaakt. In tabel 2 zijn de eerste acht regels van de count matrix te zien.
 https://hbctraining.github.io/Intro-to-rnaseq-hpc-O2/lessons/05_counting_reads.html
 
-```{bash, eval=FALSE}
-featureCounts -a iwgsc_refseqv2.1_annotation_200916_HC.gff3 \
-              -o counts/output.txt \
-              -g Parent \
-              -T 64 \
-              Aligned.out.sam
-              
-head counts/output.txt | cut -f 1,7 
+```{R, eval=FALSE}
+#Path to the annotation file
+annotation_file <- "/local-fs/bachelor-students/2020-2021/Thema12/plant_gene_expression/iwgsc_refseqv2.1_annotation_200916_HC.gff3"
 
-featureCounts -a iwgsc_refseqv2.1_annotation_200916_HC.gff3 \
-              -o counts/new_output.txt  \
-              -T 64 \
-              -g ID \
-              -t mRNA \
-              -p 
-              Aligned.out.sam
+#Paths to the .BAM files
+bam_files <- paste0("/local-fs/bachelor-students/2020-2021/Thema12/plant_gene_expression/raw_data/sample_SRR131146", 
+                    70:75, 
+                    "/Aligned.sortedByCoord.out.bam")
+
+#Run featureCounts
+featureCounts_output <- featureCounts(files = bam_files, 
+                                      annot.ext = annotation_file,
+                                      isGTFAnnotationFile = T,
+                                      GTF.featureType="mRNA",
+                                      GTF.attrType = "ID",
+                                      nthreads=64,
+                                      isPairedEnd=TRUE)
+
+#Save the count data in a separate dataframe and add column names
+count_data <- as.data.frame(featureCounts_output$counts)
+colnames(count_data) <- c("root_treatment_1", "root_treatment_2", "root_treatment_3", 
+                          "root_control_1", "root_control_2", "root_control_3")
+
+#Save the count data as a csv file
+write.csv(count_data, "data/root_counts.csv")
+
 ```
 
-Table: Tabel met de eerste acht regels van een count matrix gebasseerd op één sample, namelijk Roots_Low Fe_1.
-
-| Gene ID | Count |
-|-|-|
-| TraesCS1A03G0000200.1 | 34 |
-| TraesCS1A03G0000400.1 | 32 |
-| TraesCS1A03G0000600.1 | 7 |
-| TraesCS1A03G0000800.1 | 43 |
-| TraesCS1A03G0001000.1 | 0 |
-| TraesCS1A03G0001200.1 | 0 |
-| TraesCS1A03G0001300.1 | 2 |
-| TraesCS1A03G0001400.1 | 3 |
 
