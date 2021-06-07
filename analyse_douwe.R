@@ -1,4 +1,6 @@
 library(Rsubread)
+library(DESeq2)
+library(EnhancedVolcano)
 
 #Path to the annotation file
 annotation_file <- "/local-fs/bachelor-students/2020-2021/Thema12/plant_gene_expression/iwgsc_refseqv2.1_annotation_200916_HC.gff3"
@@ -26,7 +28,31 @@ colnames(count_data) <- c("root_treatment_1", "root_treatment_2", "root_treatmen
 write.csv(count_data, "data/root_counts.csv")
 
 #----------------------------------------------------------------------
-#Load the root count data
+#Load root count data
 root_counts <- read.table("data/root_counts.csv", header = T, sep = ",", row.names = 1)
 
+#sample information table
+coldata <- data.frame(Treatment = as.factor(rep(c("Low_Fe", "Control"), each = 3)), 
+                      row.names = colnames(root_counts))
 
+#construct a DESeqDataSet
+dds <- DESeqDataSetFromMatrix(countData = root_counts,
+                              colData = coldata,
+                              design = ~ Treatment)
+
+#Differential expression analysis
+results_dds <- DESeq(dds)
+res  <- results(results_dds)
+
+#Visualise the results
+plotMA(res, ylim= c(-13, 13))
+
+EnhancedVolcano(res,
+                lab = rownames(res),
+                x = 'log2FoldChange',
+                y = 'pvalue', 
+                pCutoff = 1e-05,
+                FCcutoff = 1,
+                labSize = 0, 
+                legendPosition = "none",
+                subtitle = "root treatment vs root control")

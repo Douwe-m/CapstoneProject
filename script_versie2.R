@@ -14,7 +14,7 @@ rawdata <- read.table(file = "data/raw_counts.csv", sep = ",", header = TRUE)
 rawdata[2:13] <- lapply(rawdata[2:13], as.numeric)
 
 ## Shows the first 5 lines of the table with rawdata. For the dimensions and structure of the data is used dim and str.
-pander(rawdata)
+# pander(rawdata)
 # dim(rawdata)
 # str(rawdata)
 
@@ -193,4 +193,8 @@ grid.draw(venn.plot)
 
 library(dplyr)
 
-deseq.results %>% arrange(padj) %>% arrange(desc(log2FoldChange)) %>% head(10)
+deseq.results %>% arrange(desc(log2FoldChange)) %>% head(10) %>% arrange(padj %>% select(log2FoldChange, padj)
+deseq.results %>% arrange(padj) %>% arrange(log2FoldChange) %>% head(10)
+
+deseq.results1 %>% arrange(padj) %>% arrange(desc(log2FoldChange)) %>% head(10) %>% select(log2FoldChange, padj)
+deseq.results1 %>% arrange(padj) %>% arrange(log2FoldChange) %>% head(10)
