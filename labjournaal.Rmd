@@ -420,4 +420,4 @@ write.csv(count_data, "data/root_counts.csv")
 
 ```
 
-
+### Stap 6: DESeq2
