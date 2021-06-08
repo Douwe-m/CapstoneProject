@@ -276,8 +276,8 @@ In de volcano plots die in het vorige subhoofdstuk zijn uit gewerkt is te zien d
 
 ```{r echo=T, results='hide', message=FALSE}
 # Select on the DEG's by group and threshold. 
-DESeq.degs <- row.names(deseq.results[which(deseq.threshold == TRUE),])
-DESeq.degs1 <- row.names(deseq.results1[which(deseq.threshold1 == TRUE),])
+DESeq.degs <- row.names(deseq.results[which(deseq.threshold == TRUE),])# Leafs
+DESeq.degs1 <- row.names(deseq.results1[which(deseq.threshold1 == TRUE),]) # Roots
 # Load package.
 library(VennDiagram)
 # Calculate the circles.
@@ -297,7 +297,35 @@ grid.draw(venn.plot)
 
 In de Venn-diagram zullen het aantal DEG's van de Leaf groep, de Root groep en de DEG's die overlappen worden weergegeven. Uit deze Venn-diagram is gekomen dat het aantal gevonden DEG's in de Leaf groep uitkomt op 5506 stuks. In de Root groep zijn 1986 DEG's gevonden. En de DEG's die in beide groepen zijn gevonden bedragen 684 stuks.
 
-Om ook nog iets te kunnen zeggen of de DEG's up of down gereguleerd worden moet een kleine berekening worden uitgevoerd. 
+Om ook nog iets te kunnen zeggen of de DEG's up of down gereguleerd worden moet een complexe berekening worden uitgevoerd. 
+
+```{r echo=T, results='hide', message=FALSE}
+leaf_unique_up <- sum(deseq.results[setdiff(DESeq.degs, DESeq.degs1),]$log2FoldChange > 1, na.rm = T)
+leaf_unique_down  <-sum(deseq.results[setdiff(DESeq.degs, DESeq.degs1),]$log2FoldChange < -1, na.rm = T)
+
+root_unique_up  <- sum(deseq.results1[setdiff(DESeq.degs1, DESeq.degs),]$log2FoldChange > 1, na.rm = T)
+root_unique_down  <-sum(deseq.results1[setdiff(DESeq.degs1, DESeq.degs),]$log2FoldChange < -1, na.rm = T)
+
+leaf_up_total <- sum(deseq.results[intersect(DESeq.degs, DESeq.degs1),]$log2FoldChange > 1, na.rm = T)
+leaf_down_total <-sum(deseq.results[intersect(DESeq.degs, DESeq.degs1),]$log2FoldChange < -1, na.rm = T)
+
+root_up_total <- sum(deseq.results1[intersect(DESeq.degs1, DESeq.degs),]$log2FoldChange > 1, na.rm = T)
+root_down_total <-sum(deseq.results1[intersect(DESeq.degs1, DESeq.degs),]$log2FoldChange < -1, na.rm = T)
+
+rownames_root_down <- row.names(deseq.results1[which(deseq.results1[intersect(DESeq.degs, DESeq.degs1),]$log2FoldChange < -1),])
+
+rownames_leaf_down <- row.names(deseq.results[which(deseq.results[intersect(DESeq.degs, DESeq.degs1),]$log2FoldChange < -1),])
+
+root_down_leaf_down <- length(intersect(rownames_leaf_down, rownames_root_down))
+root_up_leaf_down <- leaf_down_total - root_down_leaf_down
+root_up_leaf_up <- root_up_total - root_up_leaf_down
+root_down_leaf_up <- leaf_up_total - root_up_leaf_up
+
+data.frame(leaf_up = c(root_up_leaf_up, root_down_leaf_up, leaf_up_total), 
+           leaf_down = c(root_up_leaf_down, root_down_leaf_down, leaf_down_total),
+           total = c(root_up_total, root_down_total, leaf_up_total + leaf_down_total),
+           row.names = c("root_up", "root_down", "total") )
+```
 
 ## Op basis van fastq
 
