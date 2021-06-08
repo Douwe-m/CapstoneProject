@@ -1,7 +1,9 @@
+#Load the required packages
 library(Rsubread)
 library(DESeq2)
 library(EnhancedVolcano)
 
+#----------------------------------------------------------------------
 #Path to the annotation file
 annotation_file <- "/local-fs/bachelor-students/2020-2021/Thema12/plant_gene_expression/iwgsc_refseqv2.1_annotation_200916_HC.gff3"
 
