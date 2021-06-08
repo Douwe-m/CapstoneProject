@@ -190,13 +190,16 @@ Het DESeq2-pakket is ontworpen voor normalisatie, visualisatie en differentiële
 change en verspreiding. Een package die al deze functies kan uitoefenen is DESeq2. DESeq2 doet schattingen op het gebied variantie-gemiddelde, afhankelijkheid in telgegevens van high-throughput sequencing-assays en test op differentiële expressie op basis van een model zelf aangegeven model.
 
 ```{r echo=T, results='hide', message=FALSE}
-condition <- as.factor(paste(annotation$Tissue, annotation$Treatment, 
-                             sep = "_"))
+# Make a factor for the condition.
+condition <- as.factor(paste(annotation$Tissue, annotation$Treatment,                                              sep = "_"))
+# Make a DESeq dataset matrix.
 dds <- DESeqDataSetFromMatrix(countData = rawdata,
                               colData = data.frame(condition=condition),
                               design = ~ 0+condition)
+# Use DESeq to calculate the DEG's.
 results_dds <- DESeq(dds)
 
+# Put the results in the correct format.
 resultsNames(results_dds)
 res <- results(results_dds, contrast = c("condition", "Leaf_Fe", 
                                          "Leaf_Control"))
@@ -211,10 +214,10 @@ Dankzij DESeq2 is het mogelijk om nu verder te onderzoeken wat de functie van de
 Om visueel te kunnen weergeven welke genen het meest significant zijn en daarnaast ook nog een lage of een hoge fold change hebben, kan men gebruik maken van een volcano plot. In een volcano plot wordt onderscheid gemaakt tussen verschillende aspecten. Genen die een hoge of lage fold change hebben zullen zich meer aan de linkerkant en aan de rechterkant van de plot bevinden. Genen die niet differentieel tot expressie komen of weinig expressie tonen bevinden zich in het midden, deze genen hebben dus een lagere fold change als 1. Een ander aspect waarna gekeken wordt in een volcano plot is de adjusted p-value. De adjusted p-value is de p-value die gecorrigeerd is voor het aantal punten die berekend zijn, dit wordt ook wel multiple testing correction genoemd. Hoe hoger een punt zich in de volcano plot bevindt hoe significanter dit punt is en dus ook interessanter. De meest interessante punten in de volcano plot worden aangeduid met naam zodat men in één oogopslag kan zien welke genen biologische relevant en signifcant zijn. Voor dit vergelijkingsonderzoek zijn ook twee volcano plots gecreërd. In deze plots is gekeken welke genen in de leafs en in de roots significant zijn en daarnaast ook biologisch relevant. De R-code voor het maken van de plots is hieronder weergegeven. Hier op volgen de twee volcano plots.
 
 ```{r echo=T, results='hide', message=FALSE, warning=FALSE}
-# Load packages
+# Load packages.
 library(gridExtra)
 library(ggrepel)
-# Determine the p-value threshold and log fold change 
+# Determine the p-value threshold and log fold change. 
 deseq.results <- cbind(rld, as.data.frame(res@listData))
 
 pval_threshold <- 0.05
@@ -222,7 +225,7 @@ logfc_threshold <- 1
 deseq.threshold <- as.factor(abs(deseq.results$log2FoldChange) >= 
                                logfc_threshold & deseq.results$padj < 
                                pval_threshold)
-# Plot the data to a volcano plot
+# Plot the data to a volcano plot.
 g = ggplot(data=deseq.results, 
            aes(x=log2FoldChange, y=-log10(padj), 
                colour=deseq.threshold)) +
@@ -239,11 +242,11 @@ g = ggplot(data=deseq.results,
   geom_text_repel(aes(label=ifelse(padj < 0.1e-6 & abs(log2FoldChange) 
                                    >= logfc_threshold, row.names(deseq.results), 
                                    '')))
-# Make the data for sample 2 compatible
+# Make the data for sample 2 compatible.
 deseq.results1 <- cbind(rld, as.data.frame(res1@listData))
 deseq.threshold1 <- as.factor(abs(deseq.results1$log2FoldChange) 
                       >= logfc_threshold & deseq.results1$padj < pval_threshold)
-
+# Plot the data to a volcano plot.
 g1 = ggplot(data=deseq.results1, 
             aes(x=log2FoldChange, y=-log10(padj),
                 colour=deseq.threshold1)) +
@@ -260,27 +263,30 @@ g1 = ggplot(data=deseq.results1,
   geom_text_repel(aes(label=ifelse(padj < 0.1e-6 & abs(log2FoldChange) 
                                    >= logfc_threshold,
                                    row.names(deseq.results1), '')))
-
+# Put the two plots next to each other. 
 grid.arrange(g, g1, nrow = 1) 
 
 ```
 
 In de eerste volcano plot is de Leaf_Fe vergeleken met de Leaf_Control. De gevonden DEG's die een fold change hoger hebben dan 1 en een adjusted p-value (padj) lager dan 0,05 worden als groene punten weergeven. De rode punten zijn geen DEG's en voldoen dus niet aan de eisen, de punten hebben een fold change lager als 1 of een hogere adjusted p-value dan 0,05. Deze regels gelden ook voor de twee plot waarin de Root_Fe is vergeleken met de Root_Control. De meest interessante punten zijn ook nog bij naam genoemd in de volcono plots. 
 
-#### Venn Diagram
+#### Venn-Diagram
+
+In de volcano plots die in het vorige subhoofdstuk zijn uit gewerkt is te zien dat de plots niet hetzelfde zijn. Dit betekend ook dat er verschillen zitten in het aantal DEG's. Uit een volcano plot zijn niet de absolute getallen waarneembaar. Daarom is gekozen om Venn-diagram te maken waarin het aantal DEG's per groep staan weergegeven. Een Venn-diagram is een visualisatie waarin cirkels worden gebruikt om een relatie tussen groepen weer te geven. Cirkels die elkaar overlappen hebben een overeenkomst, cirkels die elkaar niet overlappen hebben geen overeenkomst. Het doel van een Venn-diagram dus om overeenkomsten en verschillen tussen groepen visueel weer te geven.
 
 ```{r echo=T, results='hide', message=FALSE}
+# Select on the DEG's by group and threshold. 
 DESeq.degs <- row.names(deseq.results[which(deseq.threshold == TRUE),])
 DESeq.degs1 <- row.names(deseq.results1[which(deseq.threshold1 == TRUE),])
-
+# Load package.
 library(VennDiagram)
-
+# Calculate the circles.
 deg.intersect = length(intersect(DESeq.degs, DESeq.degs1))
 deg.venn <- list('intersect' = deg.intersect,
                  'Leaf' = length(DESeq.degs),
                  'Root' = length(DESeq.degs1))
 
-
+# Plot the data to a Venn-diagram.
 venn.plot <- draw.pairwise.venn(deg.venn$Leaf, deg.venn$Root, deg.venn$intersect,
                                 category = c("Leaf", "Root"), scaled = F,
                                 fill = c("light blue", "pink"), 
@@ -288,6 +294,10 @@ venn.plot <- draw.pairwise.venn(deg.venn$Leaf, deg.venn$Root, deg.venn$intersect
 grid.draw(venn.plot)
 
 ```
+
+In de Venn-diagram zullen het aantal DEG's van de Leaf groep, de Root groep en de DEG's die overlappen worden weergegeven. Uit deze Venn-diagram is gekomen dat het aantal gevonden DEG's in de Leaf groep uitkomt op 5506 stuks. In de Root groep zijn 1986 DEG's gevonden. En de DEG's die in beide groepen zijn gevonden bedragen 684 stuks.
+
+Om ook nog iets te kunnen zeggen of de DEG's up of down gereguleerd worden moet een kleine berekening worden uitgevoerd. 
 
 ## Op basis van fastq
 
