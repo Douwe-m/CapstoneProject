@@ -208,6 +208,8 @@ Dankzij DESeq2 is het mogelijk om nu verder te onderzoeken wat de functie van de
 
 #### Volcano plot
 
+Om visueel te kunnen weergeven welke genen het meest significant zijn en daarnaast ook nog een lage of een hoge fold change hebben, kan men gebruik maken van een volcano plot. In een volcano plot wordt onderscheid gemaakt tussen verschillende aspecten. Genen die een hoge of lage fold change hebben zullen zich meer aan de linkerkant en aan de rechterkant van de plot bevinden. Genen die niet differentieel tot expressie komen of weinig expressie tonen bevinden zich in het midden, deze genen hebben dus een lagere fold change als 1. Een ander aspect waarna gekeken wordt in een volcano plot is de adjusted p-value. De adjusted p-value is de p-value die gecorrigeerd is voor het aantal punten die berekend zijn, dit wordt ook wel multiple testing correction genoemd. Hoe hoger een punt zich in de volcano plot bevindt hoe significanter dit punt is en dus ook interessanter. De meest interessante punten in de volcano plot worden aangeduid met naam zodat men in één oogopslag kan zien welke genen biologische relevant en signifcant zijn. Voor dit vergelijkingsonderzoek zijn ook twee volcano plots gecreërd. In deze plots is gekeken welke genen in de leafs en in de roots significant zijn en daarnaast ook biologisch relevant. De R-code voor het maken van de plots is hieronder weergegeven. Hier op volgen de twee volcano plots.
+
 ```{r echo=T, results='hide', message=FALSE, warning=FALSE}
 # Load packages
 library(gridExtra)
@@ -230,14 +232,14 @@ g = ggplot(data=deseq.results,
   geom_vline(xintercept = logfc_threshold) +
   geom_vline(xintercept = -logfc_threshold) +
   geom_hline(yintercept = -log10(pval_threshold)) +
-  xlab("log2 fold change") + ylab("-log10 padj") +
+  xlab("fold change") + ylab("-log10 padj") +
   ggtitle("Leaf_Fe vs Leaf_Control DEGs according to DESeq2 with FDR <= 0.05
            and absolute FC >= 2") +
   theme(plot.title = element_text(size = 8)) +
   geom_text_repel(aes(label=ifelse(padj < 0.1e-6 & abs(log2FoldChange) 
                                    >= logfc_threshold, row.names(deseq.results), 
                                    '')))
-# Make the data compatible for sample 2
+# Make the data for sample 2 compatible
 deseq.results1 <- cbind(rld, as.data.frame(res1@listData))
 deseq.threshold1 <- as.factor(abs(deseq.results1$log2FoldChange) 
                       >= logfc_threshold & deseq.results1$padj < pval_threshold)
@@ -251,7 +253,7 @@ g1 = ggplot(data=deseq.results1,
   geom_vline(xintercept = logfc_threshold) +
   geom_vline(xintercept = -logfc_threshold) +
   geom_hline(yintercept = -log10(pval_threshold)) +
-  xlab("log2 fold change") + ylab("-log10 padj") +
+  xlab("fold change") + ylab("-log10 padj") +
   ggtitle("Root_Fe vs Root_Control DEGs according to DESeq2 with FDR <= 0.05 
            and   absolute FC >= 2") +
   theme(plot.title = element_text(size = 8)) +
@@ -262,6 +264,8 @@ g1 = ggplot(data=deseq.results1,
 grid.arrange(g, g1, nrow = 1) 
 
 ```
+
+In de eerste volcano plot is de Leaf_Fe vergeleken met de Leaf_Control. De gevonden DEG's die een fold change hoger hebben dan 1 en een adjusted p-value (padj) lager dan 0,05 worden als groene punten weergeven. De rode punten zijn geen DEG's en voldoen dus niet aan de eisen, de punten hebben een fold change lager als 1 of een hogere adjusted p-value dan 0,05. Deze regels gelden ook voor de twee plot waarin de Root_Fe is vergeleken met de Root_Control. De meest interessante punten zijn ook nog bij naam genoemd in de volcono plots. 
 
 #### Venn Diagram
 
