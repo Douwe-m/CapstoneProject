@@ -54,7 +54,7 @@ EnhancedVolcano(res,
                 y = 'pvalue', 
                 pCutoff = 1e-05,
                 FCcutoff = 1,
-                labSize = 0, 
+                labSize = 2, 
                 legendPosition = "none",
                 subtitle = "root treatment vs root control")
 
