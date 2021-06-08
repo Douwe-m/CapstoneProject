@@ -2,6 +2,7 @@
 library(Rsubread)
 library(DESeq2)
 library(EnhancedVolcano)
+library(VennDiagram)
 
 #----------------------------------------------------------------------
 #Path to the annotation file
@@ -58,3 +59,6 @@ EnhancedVolcano(res,
                 labSize = 0, 
                 legendPosition = "none",
                 subtitle = "root treatment vs root control")
+
+#Venn diagram
+
