@@ -318,7 +318,7 @@ In de Venn-diagram zullen het aantal DEG's van de Leaf groep, de Root groep en d
 \newpage
 #### Up and down regulation calculations
 
-Om ook nog iets te kunnen zeggen of de DEG's up of down gereguleerd worden moet een complexe berekening worden uitgevoerd. 
+Om ook iets te kunnen zeggen of de DEG's up of down gereguleerd worden moet een complexe berekening worden uitgevoerd. In een Venn-diagram kan namelijk niet duidelijk aangegeven worden hoeveel genen meer expressie vertonen en hoeveel genen minder expressie laten zien. Het is namelijk interessant om te weten hoeveel genen dit zijn zodat de data vergeleken kan worden. In de berekening voor de up-gereguleerde genen wordt de som genomen van het aantal genen dat een log2FoldChange hoger heeft dan 1. Voor de down-gereguleerde genen wordt de som genomen van het aantal genen dat een log2FoldChange lager heeft dan -1. In de code hieronder wordt het eerste deel van de berekeningen weergegeven, deze berekeningen zijn te gebruiken voor de leaf en root groep. Hiervan is een overzichtelijk dataframe gemaakt waarin te zien is hoe de verdeling van de up en down gereguleerde genen is van de leaf groep ten opzichte van de root groep. 
 
 ```{r echo=T, message=FALSE}
 #Calculate how many genes are up/down regulated in the leaves
@@ -339,6 +339,8 @@ df <- data.frame(Leaves = c(leaf_unique_up, leaf_unique_down),
 
 knitr::kable(df)
 ```
+
+In de Venn-diagram was te zien dat tussen de leaf groep en de root groep enige overlap te zien is. Voor deze overlap moet gekeken worden naar het verschil en overeenkomst die in deze intersect groep te vinden is. Eerst is het totaal berekend van de leaves en roots in de intersect groep, zodat later deze getallen gebruikt kunnen worden om de som op te lossen. Op basis van de rownames van de root_down en leaf_down is berekend hoeveel DEG's in de root_down en in de leaf_down zaten. Deze twee getallen zijn gebruikt om de rest van de getallen te bereken. Deze complexe puzzel is op te lossen met onderstaande code. Onder de code bevindt een dataframe waarin alle up en down gereguleerde genen van de intersect groep worden weergeven voor de leaf en root groep.
 
 ```{r}
 #Genes that are found in both tissues to be a DEG

@@ -5,7 +5,7 @@ author:
     affiliation: Hanze University of Applied Sciences
     address:
     - Zernikeplein 11
-    email:  ...@st.hanze.nl
+    email:  d.w.j.harbers@st.hanze.nl
   - name: Douwe Metselaar
     affiliation: Hanze University of Applied Sciences
     address:
@@ -58,6 +58,10 @@ img <- readPNG("images/mds.png")
 grid.raster(img)
 ```
 
+```{r Venn-diagram, fig.width=5, echo=TRUE, eval=TRUE}
+img <- readPNG("images/venn_diagram_dd.png")
+grid.raster(img)
+```
 ## Conclusion
 
 Limit to your *own* conclusions, based on what is shown in the **Results** section. Do not include any comparison to the original article as that is the content of the next section, the **Discussion**. Usually you refer back to all steps outlined in the results section since you included it there for a reason. 
