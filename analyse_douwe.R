@@ -46,6 +46,16 @@ dds <- DESeqDataSetFromMatrix(countData = root_counts,
 results_dds <- DESeq(dds)
 res  <- results(results_dds)
 
+#Calculate the amount of genes that are up/down regulated
+deseq.threshold <- as.factor(abs(res$log2FoldChange) >= 1 & res$padj < 0.05)
+deseq.degs <- row.names(res[which(deseq.threshold == TRUE),])
+df <- data.frame(up = sum(res[deseq.degs,]$log2FoldChange > 1, na.rm = T),
+                 down = sum(res[deseq.degs,]$log2FoldChange < -1, na.rm = T),
+                 total = length(deseq.degs),
+                 row.names = "Root treatment vs root control")
+knitr::kable(df)
+
+
 #Visualise the results
 EnhancedVolcano(res,
                 lab = rownames(res),
@@ -53,9 +63,11 @@ EnhancedVolcano(res,
                 y = 'pvalue', 
                 pCutoff = 1e-05,
                 FCcutoff = 1,
-                labSize = 2, 
+                labSize = 0,
                 legendPosition = "none",
-                subtitle = "root treatment vs root control")
+                subtitle = "root treatment vs root control", 
+                gridlines.major = F, 
+                gridlines.minor = F)
 
 
 
