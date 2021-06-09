@@ -488,10 +488,12 @@ Uit de mapping stappen zijn`.BAM` files verkregen. Om nu te tellen hoe vaak een 
 library(Rsubread)
 
 #Path to the annotation file
-annotation_file <- "/local-fs/bachelor-students/2020-2021/Thema12/plant_gene_expression/iwgsc_refseqv2.1_annotation_200916_HC.gff3"
+annotation_file <- "/local-fs/bachelor-students/2020-2021/Thema12/plant_gene_expression/
+                    iwgsc_refseqv2.1_annotation_200916_HC.gff3"
 
 #Paths to the .BAM files
-bam_files <- paste0("/local-fs/bachelor-students/2020-2021/Thema12/plant_gene_expression/raw_data/sample_SRR131146", 
+bam_files <- paste0("/local-fs/bachelor-students/2020-2021/Thema12/plant_gene_expression/
+                    raw_data/sample_SRR131146", 
                     70:75, 
                     "/Aligned.sortedByCoord.out.bam")
 
@@ -517,7 +519,8 @@ write.csv(count_data, "data/root_counts.csv")
 \newpage
 
 ### Stap 6: DESeq2
-```{r, message=FALSE}
+De laatste stap is het identificeren van genen die differentieel tot expressie komen. Het DESeq2 package wordt hiervoor gebruikt. Als input wordt de opgebouwde count matrix afkomstig van de vorige stap weer gebruikt.  
+```{r, message=FALSE, fig.cap="Volcano plot van de root treatment vs root control"}
 #Load the required packages
 library(DESeq2)
 library(EnhancedVolcano)
@@ -538,15 +541,28 @@ dds <- DESeqDataSetFromMatrix(countData = root_counts,
 results_dds <- DESeq(dds)
 res  <- results(results_dds)
 
-#Visualise the results with a volcano plot
+#Visualize the results with a volcano plot
 EnhancedVolcano(res,
                 lab = rownames(res),
                 x = 'log2FoldChange',
                 y = 'pvalue', 
                 pCutoff = 1e-05,
                 FCcutoff = 1,
-                labSize = 0, 
+                labSize = 0,
                 legendPosition = "none",
-                subtitle = "root treatment vs root control")
+                subtitle = "root treatment vs root control", 
+                gridlines.major = F, 
+                gridlines.minor = F)
+
+#Calculate the amount of genes that are up/down regulated
+deseq.threshold <- as.factor(abs(res$log2FoldChange) >= 1 & res$padj < 0.05)
+deseq.degs <- row.names(res[which(deseq.threshold == TRUE),])
+df <- data.frame(up = sum(res[deseq.degs,]$log2FoldChange > 1, na.rm = T),
+                 down = sum(res[deseq.degs,]$log2FoldChange < -1, na.rm = T),
+                 total = length(deseq.degs),
+                 row.names = "Root treatment vs root control")
+
+knitr::kable(df, caption = "Hoeveelheid genen die differentieel gereguleerd zijn tussen de root treatment en control")
 ```
 
+In figuur 3 is een volcano plot te zien van de vergelijking tussen root treatment en control. In het rood zijn de mRNA transcripten gekleurd die differentieel tot expressie komen. In totaal zijn er ruim 130 duizend mRNA transcripten opgenomen. Van deze hoeveelheid zijn 1301 omhoog gereguleerd en 1411 omlaag gereguleerd (zie tabel 6). 
