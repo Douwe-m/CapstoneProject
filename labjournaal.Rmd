@@ -252,8 +252,7 @@ g = ggplot(data=deseq.results,
   geom_vline(xintercept = -logfc_threshold) +
   geom_hline(yintercept = -log10(pval_threshold)) +
   xlab("fold change") + ylab("-log10 padj") +
-  ggtitle("Leaf_Fe vs Leaf_Control DEGs according to DESeq2 with FDR <= 0.05
-           and absolute FC >= 2") +
+  ggtitle("Leaf_Fe vs Leaf_Control DEGs according to \n DESeq2 with FDR <= 0.05 and absolute FC >= 2") +
   theme(plot.title = element_text(size = 8)) +
   geom_text_repel(aes(label=ifelse(padj < 0.1e-6 & abs(log2FoldChange) 
                                    >= logfc_threshold, row.names(deseq.results), 
@@ -273,8 +272,7 @@ g1 = ggplot(data=deseq.results1,
   geom_vline(xintercept = -logfc_threshold) +
   geom_hline(yintercept = -log10(pval_threshold)) +
   xlab("fold change") + ylab("-log10 padj") +
-  ggtitle("Root_Fe vs Root_Control DEGs according to DESeq2 with FDR <= 0.05 
-           and   absolute FC >= 2") +
+  ggtitle("Root_Fe vs Root_Control DEGs according to \n DESeq2 with FDR <= 0.05 and absolute FC >= 2") +
   theme(plot.title = element_text(size = 8)) +
   geom_text_repel(aes(label=ifelse(padj < 0.1e-6 & abs(log2FoldChange) 
                                    >= logfc_threshold,

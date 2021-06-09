@@ -68,6 +68,3 @@ EnhancedVolcano(res,
                 subtitle = "root treatment vs root control", 
                 gridlines.major = F, 
                 gridlines.minor = F)
-
-
-
