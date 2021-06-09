@@ -2,7 +2,6 @@
 library(Rsubread)
 library(DESeq2)
 library(EnhancedVolcano)
-library(VennDiagram)
 
 #----------------------------------------------------------------------
 #Path to the annotation file
@@ -48,8 +47,6 @@ results_dds <- DESeq(dds)
 res  <- results(results_dds)
 
 #Visualise the results
-plotMA(res, ylim= c(-13, 13))
-
 EnhancedVolcano(res,
                 lab = rownames(res),
                 x = 'log2FoldChange',
@@ -59,22 +56,6 @@ EnhancedVolcano(res,
                 labSize = 2, 
                 legendPosition = "none",
                 subtitle = "root treatment vs root control")
-
-
-length(grep("\\.2", row.names(root_counts)))
-data<-root_counts[grep("\\.[2-9]", row.names(root_counts)),]
-data %>% arrange(desc(root_control_1))
-
-
-root_counts[grep("TraesCS1A03G0259600", row.names(root_counts)),]
-root_counts[grep("TraesCS1A03G0128600", row.names(root_counts)),]
-root_counts[grep("TraesCS5B03G1032300", row.names(root_counts)),]
-root_counts[grep("TraesCS4D03G0321600", row.names(root_counts)),]
-root_counts[grep("TraesCS4D03G0637000", row.names(root_counts)),]
-root_counts[grep("TraesCS3A03G0161400", row.names(root_counts)),]
-root_counts[grep("TraesCSU03G0252500", row.names(root_counts)),]
-
-#Venn diagram
 
 
 

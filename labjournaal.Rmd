@@ -5,6 +5,7 @@ date: "16-2-2021"
 output:
   pdf_document:
     toc: yes
+    toc_depth: 3
     highlight: pygments
     number_sections: yes
 ---
@@ -56,6 +57,8 @@ De data is verdeeld in 14 kolommen. In de eerste kolom wordt de gene name weerge
 #### Boxplot
 Om verder onderzoek te kunnen doen moet eerst de ruwe data geanalyseerd en gevisualiseerd worden. Een veel gebruikte plot om naar de verschillen in aantallen te kijken is de boxplot. De boxplot werkt doormiddel van boxen en is een weergave van een dataset waarbij een minimum, eerste kwartiel, mediaan, derde kwartiel en een maximum worden weergegeven. Daarnaast worden de uitschieters als bolletjes aangeduid. Voor de gebruikte dataset is een boxplot gemaakt. De counts zijn eerst omgezet naar de log2 van de counts, dit is gedaan omdat het nummerieke bereik van de counts erg groot kan zijn. De gecreëerde boxplot wordt hieronder weergegeven:
 
+\newpage
+
 ```{r echo=T, results='hide'}
 # Load packages.
 library(tidyr)
@@ -74,6 +77,8 @@ ggplot(transformed_raw_data, aes(x = sample, y = log2_value))+
 In de box wordt voor elk sample de mediaan weergegeven. Dit is de dikke zwarte lijn die in elke box te zien is. Het minimum is bij elk sample 0. Dit is te verklaren omdat niet tegen elke gene name een count is gemapt. Het eerste kwartiel is het begin van de box bij 0 en het derde kwartiel wordt weergegeven als het einde van de box. Het maximum wordt weergeven door de dunne lijn die vanuit de box omhoog gaat. Boven het maximum zijn de uitschieters weergegeven, deze zijn weergegeven als bolletjes.
 
 Wat opvalt aan de data is dat de Leaf_Control samples een gelijke mediaan hebben. Daarnaast heeft deze groep wel de meeste uitschieters. De andere drie groepen laten bij de samples een afnemend box niveau zien, er zijn geen grootte verschillen waarneembaar. Op dit gebied is dan ook besloten om geen samples weg te laten in het verdere onderzoek.
+
+\newpage
 
 #### Density plot
 
@@ -96,6 +101,8 @@ legend('topright', names(rawdata[,-1]), lty=c(1:ncol(rawdata[,-1])),
 
 De samples worden weergegeven doormiddel van verschillende kleuren lijnen. Rond de -3 is de grootste piek zichtbaar. Omdat met een log2 wordt gewerkt krijgen alle genen waar geen counts tegen gemapt zijn een score van -3. Te zien is in deze density plot is dat alle lijnen netjes op elkaar liggen, dit betekent dat er geen afwijkingen gevonden zijn. Dit resultaat komt overeen met de resultaten in de boxplot.
 
+\newpage
+
 #### Barplot
 
 Voor het weergeven van een het aantal counts kan men een tabel maken. Een tabel is minder goed te interpreteren als een barplot, daarom is besloten een barplot te maken waarbij de samples uitgezet zijn tegen het totaal aantal counts * 1e6. Door de barplot kan is in een oogopslag te zijn tegen welk sample veel counts zijn gevonden en of dit overeenkomt met de samples binnen en buiten de zelfde groep. Hieronder is de R code weergegeven waarmee onderstaande barplot is gemaakt. 
@@ -115,6 +122,8 @@ ggplot(col_sums, aes(x = group, y = sum/1e6)) +
 ```
 
 In de barplot zijn de verschillen duidelijk zichtbaar tussen de verschillende samples onderling maar ook per groep. De samples in de Leaf_Control groep hebben de minste verschillen in total read count in millions, dit komt ook overeen met de verschillen in de boxen van de boxplot. Daarnaast is het zelfde patroon (aflopende trap) zichtbaar bij de Leaf_Fe, Root_Control en Root_Fe. Bij deze drie laatste groepen valt vooral het verschil tussen het eerste sample en het derde sample per groep op. Hier zit een verschil in van ongeveer 33% per groep.
+
+\newpage
 
 #### Heatmap
 
@@ -151,6 +160,8 @@ pheatmap(sampleDistMatrix, show_colnames = FALSE,
 
 In de heatmap is onderscheidt gemaakt tussen de verschillende Tissues (Leaf in het turquoise en Root in het paars) en de Treatments (Fe in het groen en Control in het lichtoranje). Om samenhang of verschil aan te tonen tussen de verschillende Tissues en Treatments is met een kleurindicatie, die aan de rechterkant van de heatmap is weergegeven, de grootte van de verschillen aangegeven. Bij een verschil van nul, dat voorkomt als hetzelfde sample wordt vergeleken, wordt het vakje donkerblauw gekleurd. De rode kleur is te verklaren omdat twee verschillende Tissue's worden vergeleken in de vakken die rood kleuren, hier is dus weinig overeenkomst. De verschillen in alleen Treatment zijn een stuk kleiner, deze vakken lichten daarom lichtblauw of lichtgelig op. 
 
+\newpage
+
 #### MDS plot
 
 Een andere manier om te kijken hoe de samples geclusterd zijn is door middel van een MDS plot. De verwachting is dat de samples zich bij de juiste groep voegen. MDS staat voor Multi-Dimensional Scaling. De werking van MDS is op basis van de ongelijkheidsmaat tussen de samples, de ongelijkheidsmaat is ook wel de afstand. De afstand ten opzichte van elkaar wordt vastgesteld wanneer de samples in een plot geplaatst worden. De voorwaarden voor een MDS zijn: afstanden zijn nooit negatief, de afstand naar zichzelf is altijd 0 en het gebruik van twee diminsesies. De afstanden worden bepaald met de Poisson verdeling. Dit is de standaardwijking (de wortel uit het gemiddelde). Hoe groter de labda hoe groter het gemiddelde. Voor dit onderzoek is een MDS plot gemaakt, die hieronder wordt weergegeven met daarboven de gebruikte R code. 
@@ -183,6 +194,8 @@ ggplot(mdsPoisData, aes(x_coord, y_coord, color = groups, label = coldata)) +
 
 De MDS plot laat duidelijk de scheiding tussen de verschillende groepen zien. Wanneer men verticaal scheidt worden de groepen verdeelt in Leaf en Root waarbij de samples van de controle en treatment groep zich clusteren. Wanneer men horizontaal scheidt worden de groepen verdeelt in treatment en controle. Deze clustering verloopt dus precies zoals verwacht. Wel is te zien dat de de Leaf_Fe_3 een afwijking heeft ten opzichte van Le_Fe_1 en Leaf_Fe_2. De Leaf_Control groep laat een exacte clustering zien. De samples van Root_Control en de Root_Fe groepen liggen wel iets verspreidt maar zijn nog steeds geclusterd.
 
+\newpage
+
 ### Discovering Differentialy Expressed Genes
 #### DESeq2
 
@@ -209,9 +222,12 @@ res1 <- results(results_dds, contrast = c("condition", "Root_Fe",
 
 Dankzij DESeq2 is het mogelijk om nu verder te onderzoeken wat de functie van de gevonden DEG's zijn. Het is mogelijk om verschillende visualisaties te maken. Bij voorbeeld het maken van een Volcano plot en Venn Diagram. In de verdere subkopjes worden deze visualisaties weergegeven voor de genormaliseerde dataset.
 
+### Data analysis and visualision
 #### Volcano plot
 
 Om visueel te kunnen weergeven welke genen het meest significant zijn en daarnaast ook nog een lage of een hoge fold change hebben, kan men gebruik maken van een volcano plot. In een volcano plot wordt onderscheid gemaakt tussen verschillende aspecten. Genen die een hoge of lage fold change hebben zullen zich meer aan de linkerkant en aan de rechterkant van de plot bevinden. Genen die niet differentieel tot expressie komen of weinig expressie tonen bevinden zich in het midden, deze genen hebben dus een lagere fold change als 1. Een ander aspect waarna gekeken wordt in een volcano plot is de adjusted p-value. De adjusted p-value is de p-value die gecorrigeerd is voor het aantal punten die berekend zijn, dit wordt ook wel multiple testing correction genoemd. Hoe hoger een punt zich in de volcano plot bevindt hoe significanter dit punt is en dus ook interessanter. De meest interessante punten in de volcano plot worden aangeduid met naam zodat men in één oogopslag kan zien welke genen biologische relevant en signifcant zijn. Voor dit vergelijkingsonderzoek zijn ook twee volcano plots gecreërd. In deze plots is gekeken welke genen in de leafs en in de roots significant zijn en daarnaast ook biologisch relevant. De R-code voor het maken van de plots is hieronder weergegeven. Hier op volgen de twee volcano plots.
+
+\newpage
 
 ```{r echo=T, results='hide', message=FALSE, warning=FALSE}
 # Load packages.
@@ -274,6 +290,8 @@ In de eerste volcano plot is de Leaf_Fe vergeleken met de Leaf_Control. De gevon
 
 In de volcano plots die in het vorige subhoofdstuk zijn uit gewerkt is te zien dat de plots niet hetzelfde zijn. Dit betekend ook dat er verschillen zitten in het aantal DEG's. Uit een volcano plot zijn niet de absolute getallen waarneembaar. Daarom is gekozen om Venn-diagram te maken waarin het aantal DEG's per groep staan weergegeven. Een Venn-diagram is een visualisatie waarin cirkels worden gebruikt om een relatie tussen groepen weer te geven. Cirkels die elkaar overlappen hebben een overeenkomst, cirkels die elkaar niet overlappen hebben geen overeenkomst. Het doel van een Venn-diagram dus om overeenkomsten en verschillen tussen groepen visueel weer te geven.
 
+\newpage
+
 ```{r echo=T, results='hide', message=FALSE}
 # Select on the DEG's by group and threshold. 
 DESeq.degs <- row.names(deseq.results[which(deseq.threshold == TRUE),])# Leafs
@@ -297,35 +315,67 @@ grid.draw(venn.plot)
 
 In de Venn-diagram zullen het aantal DEG's van de Leaf groep, de Root groep en de DEG's die overlappen worden weergegeven. Uit deze Venn-diagram is gekomen dat het aantal gevonden DEG's in de Leaf groep uitkomt op 5506 stuks. In de Root groep zijn 1986 DEG's gevonden. En de DEG's die in beide groepen zijn gevonden bedragen 684 stuks.
 
+\newpage
+#### Up and down regulation calculations
+
 Om ook nog iets te kunnen zeggen of de DEG's up of down gereguleerd worden moet een complexe berekening worden uitgevoerd. 
 
-```{r echo=T, results='hide', message=FALSE}
-leaf_unique_up <- sum(deseq.results[setdiff(DESeq.degs, DESeq.degs1),]$log2FoldChange > 1, na.rm = T)
-leaf_unique_down  <-sum(deseq.results[setdiff(DESeq.degs, DESeq.degs1),]$log2FoldChange < -1, na.rm = T)
+```{r echo=T, message=FALSE}
+#Calculate how many genes are up/down regulated in the leaves
+leaf_unique_up <- sum(deseq.results[setdiff(DESeq.degs, DESeq.degs1),]$log2FoldChange > 1, 
+                      na.rm = T)
+leaf_unique_down  <-sum(deseq.results[setdiff(DESeq.degs, DESeq.degs1),]$log2FoldChange < -1, 
+                        na.rm = T)
 
-root_unique_up  <- sum(deseq.results1[setdiff(DESeq.degs1, DESeq.degs),]$log2FoldChange > 1, na.rm = T)
-root_unique_down  <-sum(deseq.results1[setdiff(DESeq.degs1, DESeq.degs),]$log2FoldChange < -1, na.rm = T)
+#Calculate how many genes are up/down regulated in the roots
+root_unique_up  <- sum(deseq.results1[setdiff(DESeq.degs1, DESeq.degs),]$log2FoldChange > 1, 
+                       na.rm = T)
+root_unique_down  <-sum(deseq.results1[setdiff(DESeq.degs1, DESeq.degs),]$log2FoldChange < -1, 
+                        na.rm = T)
 
-leaf_up_total <- sum(deseq.results[intersect(DESeq.degs, DESeq.degs1),]$log2FoldChange > 1, na.rm = T)
-leaf_down_total <-sum(deseq.results[intersect(DESeq.degs, DESeq.degs1),]$log2FoldChange < -1, na.rm = T)
+df <- data.frame(Leaves = c(leaf_unique_up, leaf_unique_down),
+                 Roots = c(root_unique_up, root_unique_down),
+                 row.names = c("Up regulated", "Down Regulated"))
 
-root_up_total <- sum(deseq.results1[intersect(DESeq.degs1, DESeq.degs),]$log2FoldChange > 1, na.rm = T)
-root_down_total <-sum(deseq.results1[intersect(DESeq.degs1, DESeq.degs),]$log2FoldChange < -1, na.rm = T)
+knitr::kable(df)
+```
 
-rownames_root_down <- row.names(deseq.results1[which(deseq.results1[intersect(DESeq.degs, DESeq.degs1),]$log2FoldChange < -1),])
+```{r}
+#Genes that are found in both tissues to be a DEG
+#How many are in the leaves up/down regulated?
+leaf_up_total <- sum(deseq.results[intersect(DESeq.degs, DESeq.degs1),]$log2FoldChange > 1, 
+                     na.rm = T)
+leaf_down_total <-sum(deseq.results[intersect(DESeq.degs, DESeq.degs1),]$log2FoldChange < -1, 
+                      na.rm = T)
 
-rownames_leaf_down <- row.names(deseq.results[which(deseq.results[intersect(DESeq.degs, DESeq.degs1),]$log2FoldChange < -1),])
+#And, how many are in the roots up/down regulated
+root_up_total <- sum(deseq.results1[intersect(DESeq.degs1, DESeq.degs),]$log2FoldChange > 1, 
+                     na.rm = T)
+root_down_total <-sum(deseq.results1[intersect(DESeq.degs1, DESeq.degs),]$log2FoldChange < -1, 
+                      na.rm = T)
 
+rownames_root_down <- row.names(deseq.results1[which(
+  deseq.results1[intersect(DESeq.degs, DESeq.degs1),]$log2FoldChange < -1),])
+rownames_leaf_down <- row.names(deseq.results[which(
+  deseq.results[intersect(DESeq.degs, DESeq.degs1),]$log2FoldChange < -1),])
+
+#Calculate the amount of genes that are up/down regulated in one tissue and 
+#up/down regulated in the other tissue
 root_down_leaf_down <- length(intersect(rownames_leaf_down, rownames_root_down))
 root_up_leaf_down <- leaf_down_total - root_down_leaf_down
 root_up_leaf_up <- root_up_total - root_up_leaf_down
 root_down_leaf_up <- leaf_up_total - root_up_leaf_up
 
-data.frame(leaf_up = c(root_up_leaf_up, root_down_leaf_up, leaf_up_total), 
-           leaf_down = c(root_up_leaf_down, root_down_leaf_down, leaf_down_total),
-           total = c(root_up_total, root_down_total, leaf_up_total + leaf_down_total),
-           row.names = c("root_up", "root_down", "total") )
+df <- data.frame(leaf_up = c(root_up_leaf_up, root_down_leaf_up, leaf_up_total), 
+                 leaf_down = c(root_up_leaf_down, root_down_leaf_down, leaf_down_total),
+                 total = c(root_up_total, root_down_total, leaf_up_total + leaf_down_total),
+                 row.names = c("root_up", "root_down", "total"))
+
+knitr::kable(df)
 ```
+
+
+\newpage
 
 ## Op basis van fastq
 
@@ -335,8 +385,8 @@ Voor de analyse zijn een aantal bestanden met relevante data. Een referentiegeno
 ### Stap 1: SRA bestanden downloaden
 De eerste stap in de analyse is het downloaden van de `.fastq` bestanden van SRA. De volgende 12 samples moeten gedownload worden:
 
-* SRR13114670 x
-* SRR13114671 x
+* SRR13114670
+* SRR13114671
 * SRR13114672
 * SRR13114673
 * SRR13114674
@@ -394,6 +444,8 @@ STAR --runThreadN 80 \
 --sjdbGTFtagExonParentTranscript Parent
 ```
 
+\newpage
+
 ### Stap 4.2: reads mappen tegen genoom met STAR
 Nu het genoom geïndexeerd is kunnen de reads tegen het referentiegenoom gemapt worden. Met het onderstaande commando wordt dit gedaan. Dit resulteert in een `.SAM` file, waarin 16.598.504 (72.41%) reads gemapt zijn tegen het genoom.
 https://hbctraining.github.io/Intro-to-rnaseq-hpc-O2/lessons/03_alignment.html
@@ -426,11 +478,15 @@ Table: Mapping statistics
 |12,79%|0,82%|
 |12,85%|0,43%|
 
+\newpage
+
 ### Stap 5: featureCounts
-Uit de mapping stap is een `.SAM` file verkregen. Om nu te tellen hoe vaak een read tegen een bepaald transcript gemapt is, wordt `featureCounts` gebruikt. Dit commando heeft twee bestanden nodig: een annotatie bestand en een alignment bestand in `.SAM` of `.BAM` format. Met het commando hieronder wordt een count matrix voor met één sample gemaakt. In tabel 2 zijn de eerste acht regels van de count matrix te zien.
-https://hbctraining.github.io/Intro-to-rnaseq-hpc-O2/lessons/05_counting_reads.html
+Uit de mapping stappen zijn`.BAM` files verkregen. Om nu te tellen hoe vaak een read tegen een bepaald transcript gemapt is, wordt `featureCounts` gebruikt. Dit commando heeft twee soorten bestanden nodig: een annotatie bestand en alignment bestanden in `.SAM` of `.BAM` format. Met het commando hieronder wordt een count matrix voor met 6 samples gemaakt.
 
 ```{R, eval=FALSE}
+#Load the required packages
+library(Rsubread)
+
 #Path to the annotation file
 annotation_file <- "/local-fs/bachelor-students/2020-2021/Thema12/plant_gene_expression/iwgsc_refseqv2.1_annotation_200916_HC.gff3"
 
@@ -458,6 +514,8 @@ write.csv(count_data, "data/root_counts.csv")
 
 ```
 
+\newpage
+
 ### Stap 6: DESeq2
 ```{r, message=FALSE}
 #Load the required packages
@@ -480,9 +538,7 @@ dds <- DESeqDataSetFromMatrix(countData = root_counts,
 results_dds <- DESeq(dds)
 res  <- results(results_dds)
 
-#Visualise the results
-plotMA(res, ylim= c(-13, 13))
-
+#Visualise the results with a volcano plot
 EnhancedVolcano(res,
                 lab = rownames(res),
                 x = 'log2FoldChange',
