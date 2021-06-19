@@ -21,6 +21,8 @@ Een tekort aan ijzer kan de gewasopbrengst sterk beïnvloeden. Daarnaast speelt 
 
 ## Materials and Methods (Diemer)
 
+De gebruikte dataset is afkomstig uit de GEO database van NCBI uit het artikel Iron deficiency triggered transcriptome changes in bread wheat geschreven door Wang, M., Gong, J., & Bhullar, N. K. (2020). De dataset bestaat uit een .csv file waarin een countmatrix is opgenomen. De data is op kwaliteit gecontroleerd en daarna is een differentiële genexpressie analyse uitgevoerd met behulp van het DESeq2 package. De genen die een adjusted p-value kleiner dan 0,05 hadden, en de threshold groter dan een log2foldchange van 1 passeerderen werden gezien als DEG, oftewel een differentieel tot expressie gebracht gen.  De complete analyse van de kwaliteitscontrole, de DESeq2 analyse en het visualiseren van de resultaten tot een volcanoplot en Venn-diagram is uitgevoerd in RStudio (versie bioinf.nl/rstudio) met R (versie bioinf.nl/rstudio) en verschillende R-plotpakketten en analysepakketten zoals ggplot2, DESeq2 en VennDiagram.
+
 ## Results (Diemer)
 
 ```{r Venn-diagram, fig.width=5, echo=FALSE, eval=TRUE, fig.cap="abc123"}
