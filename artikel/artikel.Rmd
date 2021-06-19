@@ -17,6 +17,7 @@ output: rticles::rjournal_article
 ---
 
 ## Introduction (Douwe)
+Een tekort aan ijzer kan de gewasopbrengst sterk beïnvloeden. Daarnaast speelt ijzer een belangrijke rol in het metabolisme en is het nodig voor plantengroei. IJzer fungeert onder andere als cofactor van veel enzymen. Verder is het betrokken bij de elektronentransportketen en fotosynthese. Echter is het achterliggend moleculaire mechanisme betreffende ijzertekorten niet bekend voor tarwe. Met RNA-seq zal geprobeerd worden de invloed van ijzertekorten op veranderingen in het transcriptoom te achterhalen. In bladeren en wortels van de gebruikte cultivar (Triticum aestivum cv. Bobwhite S26 s) is onderzocht wat het effect van ijzertekort op het transcriptoom is.
 
 ## Materials and Methods (Diemer)
 
