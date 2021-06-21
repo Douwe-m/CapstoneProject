@@ -26,15 +26,23 @@ De gebruikte dataset is afkomstig uit de GEO database (accession: GSE162027) van
 
 ## Resultaten (Diemer)
 
-```{r Venn-diagram, fig.width=5, echo=FALSE, eval=TRUE, fig.cap="abc123"}
+Om een duidelijke visualisatie te hebben tussen de control tegen treatment van de roots en leaves is besloten om twee volcano plots te maken, die worden weergegeven in Figure 1. De genen die differentieel tot expressie komen laten een turquoise kleur zien, wanneer deze genen ook nog significant verschillen worden deze genen hoger in de volcano plot weergegeven. 
+
+```{r volcano, fig.width=5, echo=FALSE, eval=TRUE, fig.cap="abc123"}
 library(png)
 library(grid)
+grid.raster(readPNG("images/volcano.png"))
+```
+
+Aan de volcano plots is te zien dat er verschillen waarneembaar zijn tussen de leaves en roots, zowel bij een lage als een hoge foldchange. Op basis van de plots is moeilijk vast te stellen hoeveel genen dit betreft, dit komt omdat de dichtheid van de punten op sommige plekken in de volcanoplot hoog is. Hiervoor zal een andere visualisatie uitsluiting moeten geven. Dit is gedaan in de vorm van een Venn-Diagram.
+
+De Venn-Diagram kan uitsluitsel geven over het aantal genen dat up en down gereguleerd is in de beide groepen. Daarnaast is het ook interessant om te kijken naar de overlap tussen de beide groepen. In de Venn-Diagram in Figure 2 is het totaal aantal genen die differentieel tot expressie komen in de leaves en roots weergegeven, daarnaast zijn de resultaten uitgesplitst per groep. In het midden van de Venn-Diagram is de overlap uitgesplitst in een tabel.
+
+```{r Venn-diagram, fig.width=5, echo=FALSE, eval=TRUE, fig.cap="abc123"}
 grid.raster(readPNG("images/venn_diagram_dd.png"))
 ```
 
-```{r volcano, fig.width=5, echo=FALSE, eval=TRUE, fig.cap="abc123"}
-grid.raster(readPNG("images/volcano.png"))
-```
+
 
 ## Conclusie
 Om het effect van ijzertekort op het transcriptoom te onderzoeken is een RNA-sequencing analyse opgezet. Hiervoor zijn twee groepen tarwe onder verschillende concentraties ijzer opgegroeid: een ijzerarme – en een ijzerrijke omgeving. Uit twee weefsels is vervolgens RNA geëxtraheerd en gesequenced. Een count matrix, met de hoeveelheden reads die tegen een gen gemapt zijn, is in R geladen. Vervolgens is met DESeq2 een differentiële genexpressieanalyse uitgevoerd.  In totaal zijn 8176 genen geïdentificeerd als DEG zijn bestempeld. Deze genen passeerden de log2 fold change en adjusted p-value threshold. 684 genen zijn gevonden die in beide weefsels differentieel tot expressie komen. 
