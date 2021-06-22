@@ -12,7 +12,7 @@ author:
     - Zernikeplein 11
     email:  d.g.metselaar@st.hanze.nl
 abstract: > 
-  Diemer
+  IJzer is een stof die in een aantal processen bij planten belangrijke rollen vervult. Het systeem hier achter is bij *Triticum aestivum* (bread wheat) nog vrij onbekend. RNA-seq kan hier verandering in brengen door het transciptoom te bestuderen.  In het onderzoek van \citet{wang:2020} werd gekeken naar DEG’s en is een totaal van 5285 DEG's gevonden in de leaves groep. Daarnaast werden 1906 DEG's gevonden in de roots groep. De beide groepen overlapten 684 DEGs. In dit onderzoek is het onderzoek gereproduceerd en is ook DESeq2 gebruikt als normalisatie methode. Om de resultaten te visualiseren zijn volcanoplots gemaakt en een Venn-Diagram gegenereerd. Het resultaat van dit onderzoek was vergelijkbaar met het onderzoek van  \citet{wang:2020}. Er werden 5506 DEG’s in de leaf groep waargenomen, 684 in de overlapende groepen en 1986 in de root groep. De resultaten hadden gedeeltelijke overeenkomst, mogelijk kunnen de verschillen zijn ontstaan door bijvoorbeeld een andere versie van DESeq2.
 output: rticles::rjournal_article
 ---
 
@@ -26,9 +26,9 @@ De gebruikte dataset is afkomstig uit de GEO database (accession: GSE162027) van
 
 ## Resultaten
 
-Om een duidelijke visualisatie te hebben tussen de control tegen treatment van de roots en leaves is besloten om twee volcano plots te maken, die worden weergegeven in Figure 1. De genen die differentieel tot expressie komen laten een turquoise kleur zien, wanneer deze genen ook nog significant verschillen worden deze genen hoger in de volcano plot weergegeven. 
+Om een duidelijke visualisatie te hebben tussen de control tegen treatment van de roots en leaves is besloten om twee volcano plots te maken, die worden weergegeven in Figure 1. De genen die differentieel tot expressie komen laten een turquoise kleur zien, wanneer deze genen ook nog significant verschillen worden deze genen hoger in de volcano plot weergegeven. De genen die niet differtieel tot expressie zijn gekomen zijn rood gekleurd.
 
-```{r volcano, fig.width=5, echo=FALSE, eval=TRUE, fig.cap="abc123"}
+```{r volcano, fig.width=5, echo=FALSE, eval=TRUE, fig.cap="Volcono plots van leaf treatment tegen leaf control en root treatment tegen root control. Op de x-as is de log2 fold change uitgezet tegen de adjusted p-value op de y-as voor elke gen. Genen die up gereguleerd of down gereguleerd zijn, en dus een log2 fold change hoger dan 1 hebben, en een adjusted p-value hoger dan 0,05 worden als groene bolletjes weergegeven. De rode bolletjes zijn genen die niet up of down gereguleerd zijn of een adjusted p-value lager dan 0,05 hebben."}
 library(png)
 library(grid)
 grid.raster(readPNG("images/volcano.png"))
@@ -36,13 +36,15 @@ grid.raster(readPNG("images/volcano.png"))
 
 Aan de volcano plots is te zien dat er verschillen waarneembaar zijn tussen de leaves en roots, zowel bij een lage als een hoge foldchange. Op basis van de plots is moeilijk vast te stellen hoeveel genen dit betreft, dit komt omdat de dichtheid van de punten op sommige plekken in de volcanoplot hoog is. Hiervoor zal een andere visualisatie uitsluiting moeten geven. Dit is gedaan in de vorm van een Venn-Diagram.
 
-De Venn-Diagram kan uitsluitsel geven over het aantal genen dat up en down gereguleerd is in de beide groepen. Daarnaast is het ook interessant om te kijken naar de overlap tussen de beide groepen. In de Venn-Diagram in Figure 2 is het totaal aantal genen die differentieel tot expressie komen in de leaves en roots weergegeven, daarnaast zijn de resultaten uitgesplitst per groep. In het midden van de Venn-Diagram is de overlap uitgesplitst in een tabel.
+De Venn-Diagram kan uitsluitsel geven over het aantal genen dat up en down gereguleerd is in de beide groepen. Daarnaast is het ook interessant om te kijken naar de overlap tussen de beide groepen. In de Venn-Diagram in Figure 2 is het totaal aantal genen die differentieel tot expressie komen in de leaves en roots weergegeven, daarnaast zijn de resultaten uitgesplitst per groep. 
 
-```{r Venn-diagram, fig.width=5, echo=FALSE, eval=TRUE, fig.cap="abc123"}
+```{r Venn-diagram, fig.width=5, echo=FALSE, eval=TRUE, fig.cap="Venn-Diagram van DEG's die gevonden zijn in de dataset geanalyseerd doormiddel van DESeq2 in de groepen leaves en roots. De linker cirkel geeft de DEG's weer van de leaf groep, in de cirkel staan het aantal up en down gereguleerde genen. De rechter cirkel geeft de DEG's weer van de root groep. De overlap is het aantal DEG's wat in beide groepen up en down gereguleerd is. De tabel maakt onderscheid tussen de overlap tussen beide groepen."}
 grid.raster(readPNG("images/venn_diagram_dd.png"))
 ```
 
 \newpage
+
+In het midden van de Venn-Diagram is de overlap uitgesplitst in een tabel. De leaf groep bestaat in totaal uit 5506 DEG's, 3838 genen zijn up-gereguleerd en 1168 down-gereguleerd. In de root groep is een totaal van 1986 DEG's gevonden, waarvan 840 genen up-gereguleerd zijn en 1146 down-gereguleerd. De 684 overlappende DEG's zijn overeenkomstig tussen beide groepen. 
 
 ## Conclusie
 Om het effect van ijzertekort op het transcriptoom te onderzoeken is een RNA-sequencing analyse opgezet. Hiervoor zijn twee groepen tarwe onder verschillende concentraties ijzer opgegroeid: een ijzerarme – en een ijzerrijke omgeving. Uit twee weefsels is vervolgens RNA geëxtraheerd en gesequenced. Een count matrix, met de hoeveelheden reads die tegen een gen gemapt zijn, is in R geladen. Vervolgens is met DESeq2 een differentiële genexpressieanalyse uitgevoerd.  In totaal zijn 8176 genen geïdentificeerd als DEG zijn bestempeld. Deze genen passeerden de log2 fold change en adjusted p-value threshold. 684 genen zijn gevonden die in beide weefsels differentieel tot expressie komen. 
