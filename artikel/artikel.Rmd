@@ -12,7 +12,7 @@ author:
     - Zernikeplein 11
     email:  d.g.metselaar@st.hanze.nl
 abstract: > 
-  Diemer
+  IJzer is een stof die in een aantal processen bij planten belangrijke rollen vervult. Het systeem hier achter is bij *Triticum aestivum* (bread wheat) nog vrij onbekend. RNA-seq kan hier verandering in brengen door het transciptoom te bestuderen.  In het onderzoek van \citet{wang:2020} werd gekeken naar DEG’s en is een totaal van 5285 DEG's gevonden in de leaves groep. Daarnaast werden 1906 DEG's gevonden in de roots groep. De beide groepen overlapten 684 DEGs. In dit onderzoek is het onderzoek gereproduceerd en is ook DESeq2 gebruikt als normalisatie methode. Om de resultaten te visualiseren zijn volcanoplots gemaakt en een Venn-Diagram gegenereerd. Het resultaat van dit onderzoek was vergelijkbaar met het onderzoek van  \citet{wang:2020}. Er werden 5506 DEG’s in de leaf groep waargenomen, 684 in de overlapende groepen en 1986 in de root groep. De resultaten hadden gedeeltelijke overeenkomst, mogelijk kunnen de verschillen zijn ontstaan door bijvoorbeeld een andere versie van DESeq2.
 output: rticles::rjournal_article
 ---
 
